@@ -1,9 +1,8 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Star, Package, Shield, Zap } from 'lucide-react';
-import { Button } from '~/ui/button';
-import { Badge } from '~/ui/badge';
-import { Card } from '~/ui/card';
-import { useState } from 'react';
+import {ShoppingCart, Star, Package, Shield, Zap} from 'lucide-react';
+import {Button} from '~/ui/button';
+import {Badge} from '~/ui/badge';
+import {Card} from '~/ui/card';
+import {useState} from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -12,17 +11,14 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '~/ui/carousel';
-import productImage1 from '../assets/product-image-1.png';
 import productImage2 from '../assets/product-image-2.png';
 import productImage3 from '../assets/product-image-3.png';
-import productImage4 from '../assets/product-image-4.png';
-import productImage6 from '../assets/product-image-6.png';
 
 interface ProductSectionProps {
   onAddToCart: (quantity: number) => void;
 }
 
-export function ProductSection({ onAddToCart }: ProductSectionProps) {
+export function ProductSection({onAddToCart}: ProductSectionProps) {
   const [quantity, setQuantity] = useState(1);
   const [selectedPack, setSelectedPack] =
     useState<'single' | 'pack6' | 'pack12'>('single');
@@ -30,8 +26,8 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const productImages = [
-    { url: productImage2, alt: 'Fire Up Can - Close Up 1' },
-    { url: productImage3, alt: 'Fire Up Can - Close Up 2' },
+    {url: productImage2, alt: 'Fire Up Can - Close Up 1'},
+    {url: productImage3, alt: 'Fire Up Can - Close Up 2'},
   ];
 
   const ingredients = [
@@ -57,13 +53,13 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
   const totalIngredients = ingredients.length;
 
   const packs = {
-    single: { price: 3.99, cans: 1, savings: 0 },
-    pack6: { price: 21.99, cans: 6, savings: 10 },
-    pack12: { price: 39.99, cans: 12, savings: 20 },
+    single: {price: 3.99, cans: 1, savings: 0},
+    pack6: {price: 21.99, cans: 6, savings: 10},
+    pack12: {price: 39.99, cans: 12, savings: 20},
   };
 
   const currentPack = packs[selectedPack];
-  const pricePerCan = currentPack.price / currentPack.cans;
+  const pricePerCan = currentPack.price / currentPack.cans; // still here if you want to display later
 
   const handleAddToCartClick = () => {
     onAddToCart(quantity * currentPack.cans);
@@ -88,13 +84,8 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
       <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 via-red-600/20 to-yellow-600/20 blur-3xl" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+        {/* was motion.div */}
+        <div className="text-center mb-12">
           <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
             Premium Energy
           </Badge>
@@ -104,17 +95,11 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
           <p className="text-gray-400 max-w-2xl mx-auto">
             355ml of pure energy. Zero sugar, maximum performance.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          {/* Product Image Carousel */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
+          {/* Product Image Carousel – was motion.div */}
+          <div className="relative">
             <div className="relative bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-3xl p-8 border border-orange-500/20">
               <Carousel
                 className="w-full max-w-sm mx-auto"
@@ -154,7 +139,7 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
                 />
               </Carousel>
 
-              {/* Best Seller badge – back to yellow, now with white text */}
+              {/* Best Seller badge */}
               <div className="absolute top-8 right-8 bg-yellow-400 text-white px-4 py-2 rounded-full rotate-12 z-10">
                 <span className="flex items-center gap-1">
                   <Star className="w-4 h-4 fill-current text-white" />
@@ -186,18 +171,11 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
                 </button>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          {/* Product Details */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="space-y-6"
-          >
+          {/* Product Details – was motion.div */}
+          <div className="space-y-6">
             <div>
-
               <div className="flex items-baseline gap-3 mb-4">
                 <span className="text-4xl text-white">
                   ${currentPack.price.toFixed(2)}
@@ -218,23 +196,22 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
                 <span className="text-gray-400">(2,847 reviews)</span>
               </div>
 
-
-
               {/* Ingredient dropdown */}
               <div className="mt-4">
-                <details   className="
-                            group
-                            bg-gradient-to-r from-orange-500/15 via-red-500/15 to-yellow-400/15
-                            border border-white/60
-                            rounded-xl
-                            shadow-[0_0_30px_rgba(248,113,113,0.35)]
-                            overflow-hidden
-                          "
-                          style={{ borderColor: 'rgba(255,255,255,0.9)' }}
-                          >
+                <details
+                  className="
+                    group
+                    bg-gradient-to-r from-orange-500/15 via-red-500/15 to-yellow-400/15
+                    border border-white/60
+                    rounded-xl
+                    shadow-[0_0_30px_rgba(248,113,113,0.35)]
+                    overflow-hidden
+                  "
+                  style={{borderColor: 'rgba(255,255,255,0.9)'}}
+                >
                   <summary
                     className="flex items-center justify-between px-4 py-3 cursor-pointer text-sm text-white select-none
-                              outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+                      outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
                   >
                     <div className="flex items-center gap-3">
                       <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-orange-500/40 border border-orange-200/70 text-[12px]">
@@ -245,7 +222,8 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
                           Full Ingredient Breakdown
                         </span>
                         <span className="text-xs text-gray-200">
-                          Collagen, taurine, natural caffeine, vitamins, and more.
+                          Collagen, taurine, natural caffeine, vitamins, and
+                          more.
                         </span>
                       </div>
                     </div>
@@ -266,7 +244,8 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
                       {ingredients.map((item) => (
                         <span
                           key={item}
-                          className="text-[11px] px-3 py-1.5 rounded-full bg-white/90 text-white border border-white/80 shadow-sm" style={{ borderColor: 'rgba(255,255,255,0.9)' }}
+                          className="text-[11px] px-3 py-1.5 rounded-full bg-white/90 text-white border border-white/80 shadow-sm"
+                          style={{borderColor: 'rgba(255,255,255,0.9)'}}
                         >
                           {item}
                         </span>
@@ -277,6 +256,7 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
               </div>
             </div>
 
+            {/* Pack selection */}
             <div>
               <label className="text-white mb-3 block">Choose Your Pack</label>
               <div className="grid grid-cols-3 gap-3">
@@ -377,7 +357,7 @@ export function ProductSection({ onAddToCart }: ProductSectionProps) {
                 <div className="text-xs text-gray-400">Fast Delivery</div>
               </Card>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

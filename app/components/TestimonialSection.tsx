@@ -1,9 +1,8 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Quote, Play, Instagram } from 'lucide-react';
-import { Card } from '~/ui/card';
-import { Avatar, AvatarFallback } from '~/ui/avatar';
-import { Badge } from '~/ui/badge';
-import { FaTiktok } from 'react-icons/fa';
+import {Star, Quote, Play, Instagram} from 'lucide-react';
+import {Card} from '~/ui/card';
+import {Avatar, AvatarFallback} from '~/ui/avatar';
+import {Badge} from '~/ui/badge';
+import {FaTiktok} from 'react-icons/fa';
 
 import productVideo2 from '../assets/product-video-2.mov';
 import productVideo3 from '../assets/product-video-3.mov';
@@ -35,9 +34,9 @@ export function TestimonialsSection() {
   ];
 
   const contentShowcase = [
-    { video: productVideo2 },
-    { video: productVideo3 },
-    { video: productVideo4 },
+    {video: productVideo2},
+    {video: productVideo3},
+    {video: productVideo4},
   ];
 
   return (
@@ -45,30 +44,21 @@ export function TestimonialsSection() {
       {/* TESTIMONIALS SECTION */}
       <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
         <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
+          {/* was motion.div */}
+          <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl text-white uppercase mb-4">
               What People Are Saying
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who've made Fire Up their energy drink of choice.
+              Join thousands of satisfied customers who've made Fire Up their
+              energy drink of choice.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+              // was motion.div
+              <div key={index}>
                 <Card className="bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10 p-6 hover:border-orange-500/30 transition-all duration-300 h-full flex flex-col">
                   <Quote className="w-8 h-8 text-orange-400 mb-4" />
 
@@ -99,7 +89,7 @@ export function TestimonialsSection() {
                     </div>
                   </div>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -110,13 +100,8 @@ export function TestimonialsSection() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:64px_64px]" />
 
         <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
+          {/* was motion.div */}
+          <div className="text-center mb-16">
             <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
               Our Content
             </Badge>
@@ -148,21 +133,18 @@ export function TestimonialsSection() {
                 <FaTiktok className="w-5 h-5" />
               </a>
             </div>
-          </motion.div>
+          </div>
 
           <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {contentShowcase.map((content, index) => (
-              <motion.div
+              // was motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="group relative overflow-hidden rounded-2xl"
               >
                 <Card
                   className="bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10 overflow-hidden hover:border-orange-500/30 transition-all duration-300 cursor-pointer"
-                  style={{ aspectRatio: '9/16' }}
+                  style={{aspectRatio: '9/16'}}
                 >
                   <div className="relative h-full overflow-hidden">
                     <video
@@ -183,7 +165,7 @@ export function TestimonialsSection() {
                     </div>
                   </div>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

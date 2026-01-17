@@ -1,53 +1,51 @@
-"use client";
+import * as React from 'react';
+import { cn } from './utils';
 
-import * as React from "react";
-import * as AvatarPrimitive from "@radix-ui/react-avatar@1.1.3";
+export interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
+  src?: string;
+  alt?: string;
+}
 
-import { cn } from "./utils";
+/**
+ * Simple Avatar component – no Radix, no Node globals.
+ */
+export function Avatar({ src, alt, className, children, ...props }: AvatarProps) {
+  return (
+    <div
+      className={cn(
+        'relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-800 overflow-hidden',
+        className,
+      )}
+      {...props}
+    >
+      {src ? (
+        <img
+          src={src}
+          alt={alt}
+          className="h-full w-full object-cover"
+          loading="lazy"
+        />
+      ) : (
+        children
+      )}
+    </div>
+  );
+}
 
-function Avatar({
+/**
+ * Optional fallback, if you want initials, etc.
+ */
+export function AvatarFallback({
   className,
   ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+}: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <AvatarPrimitive.Root
-      data-slot="avatar"
+    <span
       className={cn(
-        "relative flex size-10 shrink-0 overflow-hidden rounded-full",
+        'flex h-full w-full items-center justify-center text-sm font-medium text-white',
         className,
       )}
       {...props}
     />
   );
 }
-
-function AvatarImage({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  return (
-    <AvatarPrimitive.Image
-      data-slot="avatar-image"
-      className={cn("aspect-square size-full", className)}
-      {...props}
-    />
-  );
-}
-
-function AvatarFallback({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
-  return (
-    <AvatarPrimitive.Fallback
-      data-slot="avatar-fallback"
-      className={cn(
-        "bg-muted flex size-full items-center justify-center rounded-full",
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-export { Avatar, AvatarImage, AvatarFallback };

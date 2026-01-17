@@ -1,24 +1,23 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Flame } from 'lucide-react';
-import { Button } from '~/ui/button';
+import {ArrowRight, Flame} from 'lucide-react';
+import {Button} from '~/ui/button';
 
 interface CTASectionProps {
   onShopNow: () => void;
 }
 
-export function CTASection({ onShopNow }: CTASectionProps) {
+export function CTASection({onShopNow}: CTASectionProps) {
   return (
     <section id="first" className="py-20 bg-black relative overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 via-red-600/20 to-yellow-600/20 blur-3xl"></div>
-      
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 via-red-600/20 to-yellow-600/20 blur-3xl" />
+
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto text-center"
+        <div
+          className="
+            max-w-4xl mx-auto text-center
+            opacity-100 scale-100
+            transition-all duration-700 ease-out
+          "
         >
           <div className="inline-flex items-center gap-2 bg-orange-500/20 px-4 py-2 rounded-full border border-orange-500/30 mb-6">
             <Flame className="w-4 h-4 text-orange-400" />
@@ -26,11 +25,16 @@ export function CTASection({ onShopNow }: CTASectionProps) {
           </div>
 
           <h2 className="text-4xl md:text-6xl text-white uppercase mb-6">
-            Ready to <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">Fire Up</span> Your Life?
+            Ready to{' '}
+            <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+              Fire Up
+            </span>{' '}
+            Your Life?
           </h2>
-          
+
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Don't settle for ordinary. Join the Fire Up revolution and experience energy like never before.
+            Don&apos;t settle for ordinary. Join the Fire Up revolution and
+            experience energy like never before.
           </p>
 
           <div className="flex flex-wrap gap-4 justify-center mb-12">
@@ -66,7 +70,7 @@ export function CTASection({ onShopNow }: CTASectionProps) {
               <div className="text-sm text-gray-400">Caffeine</div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

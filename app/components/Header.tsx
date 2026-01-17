@@ -1,105 +1,100 @@
-import { ShoppingCart, Menu, X } from 'lucide-react';
-import { Button } from '~/ui/button';
-import { Badge } from '~/ui/badge';
-import { useState } from 'react';
+// app/components/Header.tsx
+
+import {ShoppingCart, Menu, X} from 'lucide-react';
+import {Button} from '~/ui/button';
+import {Badge} from '~/ui/badge';
+import {useState, useEffect} from 'react';
 import fireUpLogo from '../assets/fireup-logo.png';
+import {Aside} from '~/components/Aside';
 
 interface HeaderProps {
-  cartCount?: number;
-  onCartClick?: () => void;
-  currentPage?: 'home' | 'about' | 'contact';
-  onNavigate?: (page: 'home' | 'about' | 'contact', section?: string) => void;
-
-  // allow extra props like header, cart, isLoggedIn, publicStoreDomain
-  [key: string]: unknown;
+  header?: unknown;
+  cart?: unknown;
+  isLoggedIn?: unknown;
+  publicStoreDomain?: string;
 }
 
-export function Header({
-  cartCount = 0,
-  onCartClick,
-  currentPage = 'home',
-  onNavigate,
-  ...rest
-}: HeaderProps) {
+export function Header({header, cart, isLoggedIn, publicStoreDomain}: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentPage, setCurrentPage] =
+    useState<'home' | 'about' | 'contact'>('home');
 
-  const handleNavClick = (page: 'home' | 'about' | 'contact', section?: string) => {
-    // guard because onNavigate might be undefined when called from PageLayout
-    onNavigate?.(page, section);
-    setMobileMenuOpen(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const path = window.location.pathname;
 
-    if (section) {
-      setTimeout(() => {
-        document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
-  };
+    if (path.includes('/about')) setCurrentPage('about');
+    else if (path.includes('/contact')) setCurrentPage('contact');
+    else setCurrentPage('home');
+  }, []);
+
+  let openCart: (() => void) | undefined;
+  try {
+    // @ts-ignore
+    const {open} = Aside.useAside?.() ?? {};
+    openCart = () => open?.('cart');
+  } catch {
+    openCart = () => console.log('Cart clicked');
+  }
+
+  const cartCount = 0;
+
+  const closeMobile = () => setMobileMenuOpen(false);
+
+  const linkClasses = (active: boolean) =>
+    `text-sm md:text-base font-semibold tracking-[0.18em] uppercase ${
+      active ? '!text-orange-400' : '!text-white'
+    } hover:!text-orange-400 transition-colors`;
 
   return (
-    <header
-      {...rest}
-      className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/10"
-    >
-      <div className="container mx-auto px-4 py-4">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md">
+      <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <button
-            onClick={() => handleNavClick('home')}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          {/* Logo -> home */}
+          <a
+            href="/"
+            onClick={closeMobile}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <div className="relative">
               <img
                 src={fireUpLogo}
                 alt="Fire Up logo"
-                className="w-10 h-10 md:w-12 md:h-12 rounded-xl object-cover shadow-lg border border-white/20"
+                className="w-9 h-9 md:w-10 md:h-10 rounded-xl object-cover shadow-lg"
               />
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-yellow-400 rounded-full animate-pulse" />
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 md:w-3.5 md:h-3.5 bg-yellow-400 rounded-full animate-pulse" />
             </div>
-            <div>
-              <h1 className="text-white uppercase tracking-wider">Fire Up</h1>
-              <p className="text-xs text-orange-400 -mt-1">Energy Drink</p>
+            <div className="leading-tight">
+              <h1 className="text-white text-lg md:text-xl font-semibold tracking-[0.2em] uppercase">
+                FIRE UP
+              </h1>
+              <p className="text-[11px] text-orange-400 mt-0.5">
+                Energy Drink
+              </p>
             </div>
-          </button>
+          </a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
-            <button
-              onClick={() => handleNavClick('home')}
-              className={`${
-                currentPage === 'home' ? 'text-orange-400' : 'text-white'
-              } hover:text-orange-400 transition-colors`}
-            >
+            <a href="/" onClick={closeMobile} className={linkClasses(currentPage === 'home')}>
               Home
-            </button>
-            <button
-              onClick={() => handleNavClick('home', 'product')}
-              className="text-white hover:text-orange-400 transition-colors"
-            >
+            </a>
+            <a href="/#product" onClick={closeMobile} className={linkClasses(false)}>
               Product
-            </button>
-            <button
-              onClick={() => handleNavClick('about')}
-              className={`${
-                currentPage === 'about' ? 'text-orange-400' : 'text-white'
-              } hover:text-orange-400 transition-colors`}
-            >
+            </a>
+            <a href="/about" onClick={closeMobile} className={linkClasses(currentPage === 'about')}>
               About Us
-            </button>
-            <button
-              onClick={() => handleNavClick('contact')}
-              className={`${
-                currentPage === 'contact' ? 'text-orange-400' : 'text-white'
-              } hover:text-orange-400 transition-colors`}
-            >
+            </a>
+            <a href="/contact" onClick={closeMobile} className={linkClasses(currentPage === 'contact')}>
               Contact
-            </button>
+            </a>
           </nav>
 
           {/* Cart + mobile menu */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Button
-              onClick={onCartClick}
-              className="relative bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
+              onClick={openCart}
+              className="relative h-9 px-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
             >
               <ShoppingCart className="w-5 h-5" />
               {cartCount > 0 && (
@@ -113,52 +108,31 @@ export function Header({
               variant="ghost"
               size="icon"
               className="md:hidden text-white"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((v) => !v)}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </Button>
           </div>
         </div>
 
+        {/* Mobile nav */}
         {mobileMenuOpen && (
-          <nav className="md:hidden mt-4 pt-4 border-t border-white/10 flex flex-col items-center gap-3">
-            <button
-              onClick={() => handleNavClick('home')}
-              className={`text-left ${
-                currentPage === 'home' ? 'text-orange-400' : 'text-white'
-              } hover:text-orange-400 transition-colors`}
-            >
+          <nav className="md:hidden mt-2 pt-3 flex flex-col items-center gap-2 pb-3">
+            <a href="/" onClick={closeMobile} className={linkClasses(currentPage === 'home')}>
               Home
-            </button>
-            <button
-              onClick={() => handleNavClick('home', 'product')}
-              className="text-left text-white hover:text-orange-400 transition-colors"
-            >
+            </a>
+            <a href="/#product" onClick={closeMobile} className={linkClasses(false)}>
               Product
-            </button>
-            <button
-              onClick={() => handleNavClick('about')}
-              className={`text-left ${
-                currentPage === 'about' ? 'text-orange-400' : 'text-white'
-              } hover:text-orange-400 transition-colors`}
-            >
+            </a>
+            <a href="/about" onClick={closeMobile} className={linkClasses(currentPage === 'about')}>
               About Us
-            </button>
-            <button
-              onClick={() => handleNavClick('contact')}
-              className={`text-left ${
-                currentPage === 'contact' ? 'text-orange-400' : 'text-white'
-              } hover:text-orange-400 transition-colors`}
-            >
+            </a>
+            <a href="/contact" onClick={closeMobile} className={linkClasses(currentPage === 'contact')}>
               Contact
-            </button>
+            </a>
           </nav>
         )}
       </div>
     </header>
   );
-}
-
-export function HeaderMenu() {
-  return null;
 }

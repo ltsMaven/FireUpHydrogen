@@ -143,23 +143,25 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 }
 
 export function Layout({children}: {children?: React.ReactNode}) {
-  const nonce = useNonce();
+  // 🔴 Temporarily disable this – it's the only hook in Layout
+  // const nonce = useNonce();
 
   return (
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <link rel="stylesheet" href={tailwindCss}></link>
-        <link rel="stylesheet" href={resetStyles}></link>
-        <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={tailwindCss} />
+        <link rel="stylesheet" href={resetStyles} />
+        <link rel="stylesheet" href={appStyles} />
         <Meta />
         <Links />
       </head>
       <body>
         {children}
-        <ScrollRestoration nonce={nonce} />
-        <Scripts nonce={nonce} />
+        {/* Also remove nonce usage here */}
+        <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );

@@ -1,23 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX, SkipForward } from 'lucide-react';
-import { Button } from '~/ui/button';
+import {useState, useEffect, useRef} from 'react';
+import {Volume2, VolumeX, SkipForward} from 'lucide-react';
+import {Button} from '~/ui/button';
 
 interface VideoIntroProps {
   onComplete: () => void;
 }
 
-export function VideoIntro({ onComplete }: VideoIntroProps) {
+export function VideoIntro({onComplete}: VideoIntroProps) {
   const [isMuted, setIsMuted] = useState(true);
   const [showSkip, setShowSkip] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     // Show skip button after 2 seconds
     const timer = setTimeout(() => {
       setShowSkip(true);
     }, 2000);
-
     return () => clearTimeout(timer);
   }, []);
 
@@ -39,20 +37,17 @@ export function VideoIntro({ onComplete }: VideoIntroProps) {
   };
 
   const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-    }
+    setIsMuted((prev) => {
+      const next = !prev;
+      if (videoRef.current) {
+        videoRef.current.muted = next;
+      }
+      return next;
+    });
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-[100] bg-black"
-    >
+    <div className="fixed inset-0 z-[100] bg-black">
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full">
         <video
@@ -63,57 +58,36 @@ export function VideoIntro({ onComplete }: VideoIntroProps) {
           onEnded={handleVideoEnd}
           poster="https://images.unsplash.com/photo-1741519735476-cfc8bf0b2ae4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbmVyZ3klMjBkcmluayUyMGNhbnxlbnwxfHx8fHwxNzYwMjcwNzQ0fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
         >
-          {/* Using a sample video - replace with your actual Fire Up brand video */}
           <source
             src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
             type="video/mp4"
           />
         </video>
-        
-        {/* Dark overlay for better text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80"></div>
+
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
       </div>
 
-      {/* Logo Animation */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.5, duration: 0.8 }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10 pointer-events-none"
-      >
+      {/* Logo + Text */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center z-10 pointer-events-none">
         <div className="flex flex-col items-center gap-4">
-          <motion.div
-            animate={{
-              scale: [1, 1.1, 1],
-              rotate: [0, 5, -5, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="relative"
-          >
+          <div className="relative">
             <div className="w-32 h-32 bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 rounded-3xl flex items-center justify-center shadow-2xl">
               <span className="text-white text-6xl">F</span>
             </div>
-            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full animate-pulse"></div>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
-          >
+            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-yellow-400 rounded-full animate-pulse" />
+          </div>
+
+          <div>
             <h1 className="text-6xl md:text-8xl text-white uppercase tracking-wider mb-2">
               Fire Up
             </h1>
             <p className="text-xl md:text-2xl text-orange-400 uppercase tracking-widest">
               Ignite Your Energy
             </p>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Controls */}
       <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
@@ -133,51 +107,27 @@ export function VideoIntro({ onComplete }: VideoIntroProps) {
           </Button>
 
           {/* Skip Button */}
-          <AnimatePresence>
-            {showSkip && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-              >
-                <Button
-                  onClick={handleSkip}
-                  className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group"
-                  size="lg"
-                >
-                  Skip Intro
-                  <SkipForward className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {showSkip && (
+            <Button
+              onClick={handleSkip}
+              className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group"
+              size="lg"
+            >
+              Skip Intro
+              <SkipForward className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Loading Indicator */}
-      <motion.div
-        initial={{ opacity: 1 }}
-        animate={{ opacity: 0 }}
-        transition={{ delay: 1.5, duration: 0.5 }}
-        className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10"
-      >
+      {/* Loading dots – simplified */}
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-10">
         <div className="flex gap-2">
-          {[0, 1, 2].map((i) => (
-            <motion.div
-              key={i}
-              animate={{
-                y: [0, -10, 0],
-              }}
-              transition={{
-                duration: 0.6,
-                repeat: Infinity,
-                delay: i * 0.2,
-              }}
-              className="w-2 h-2 bg-orange-500 rounded-full"
-            ></motion.div>
-          ))}
+          <div className="w-2 h-2 bg-orange-500 rounded-full" />
+          <div className="w-2 h-2 bg-orange-500 rounded-full" />
+          <div className="w-2 h-2 bg-orange-500 rounded-full" />
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
