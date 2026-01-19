@@ -1,10 +1,13 @@
-import {
+// app/components/Aside.tsx
+import React, {
   createContext,
   type ReactNode,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
+import {createPortal} from 'react-dom';
 
 type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
 type AsideContextValue = {
@@ -13,16 +16,8 @@ type AsideContextValue = {
   close: () => void;
 };
 
-/**
- * A side bar component with Overlay
- * @example
- * ```jsx
- * <Aside type="search" heading="SEARCH">
- *  <input type="search" />
- *  ...
- * </Aside>
- * ```
- */
+const AsideContext = createContext<AsideContextValue | null>(null);
+
 export function Aside({
   children,
   heading,
@@ -36,64 +31,123 @@ export function Aside({
   const expanded = type === activeType;
 
   useEffect(() => {
-    const abortController = new AbortController();
+    if (!expanded) return;
 
-    if (expanded) {
-      document.addEventListener(
-        'keydown',
-        function handler(event: KeyboardEvent) {
-          if (event.key === 'Escape') {
-            close();
-          }
-        },
-        {signal: abortController.signal},
-      );
-    }
-    return () => abortController.abort();
-  }, [close, expanded]);
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
+    };
 
-  return (
+    document.addEventListener('keydown', onKeyDown);
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [expanded, close]);
+
+  if (!expanded) return null;
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <div
-      aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
-      role="dialog"
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 2147483647,
+        display: 'block',
+      }}
     >
-      <button className="close-outside" onClick={close} />
-      <aside>
-        <header>
-          <h3>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
-            &times;
+      {/* Backdrop */}
+      <div
+        onClick={close}
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+        }}
+      />
+
+      {/* Panel */}
+      <aside
+        role="dialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          position: 'absolute',
+          right: 16,
+          top: 16,
+          bottom: 16,
+          borderRadius: 16,
+          width: 'min(420px, calc(100vw - 32px))',
+          background: '#111827',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          zIndex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: '16px',
+            borderBottom: '1px solid rgba(255,255,255,0.10)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            color: 'white',
+            fontWeight: 600,
+          }}
+        >
+          <div>{heading}</div>
+          <button
+            type="button"
+            onClick={close}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'rgba(255,255,255,0.75)',
+              fontSize: 20,
+              cursor: 'pointer',
+              lineHeight: 1,
+            }}
+            aria-label="Close panel"
+          >
+            ×
           </button>
-        </header>
-        <main>{children}</main>
+        </div>
+
+        {/* Body */}
+        <div style={{flex: 1, overflow: 'auto'}}>{children}</div>
       </aside>
-    </div>
+    </div>,
+    document.body,
   );
 }
-
-const AsideContext = createContext<AsideContextValue | null>(null);
 
 Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
   const [type, setType] = useState<AsideType>('closed');
 
-  return (
-    <AsideContext.Provider
-      value={{
-        type,
-        open: setType,
-        close: () => setType('closed'),
-      }}
-    >
-      {children}
-    </AsideContext.Provider>
+  const value = useMemo(
+    () => ({
+      type,
+      open: setType,
+      close: () => setType('closed'),
+    }),
+    [type],
   );
+
+  return <AsideContext.Provider value={value}>{children}</AsideContext.Provider>;
 };
 
 export function useAside() {
   const aside = useContext(AsideContext);
-  if (!aside) {
-    throw new Error('useAside must be used within an AsideProvider');
-  }
+  if (!aside) throw new Error('useAside must be used within an Aside.Provider');
   return aside;
 }

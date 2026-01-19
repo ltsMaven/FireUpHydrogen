@@ -144,7 +144,7 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export function Layout({children}: {children?: React.ReactNode}) {
   // 🔴 Temporarily disable this – it's the only hook in Layout
-  // const nonce = useNonce();
+  const nonce = useNonce();
 
   return (
     <html lang="en">
@@ -159,9 +159,8 @@ export function Layout({children}: {children?: React.ReactNode}) {
       </head>
       <body>
         {children}
-        {/* Also remove nonce usage here */}
-        <ScrollRestoration />
-        <Scripts />
+        <ScrollRestoration nonce={nonce} />
+        <Scripts nonce={nonce} />
       </body>
     </html>
   );

@@ -8,6 +8,23 @@ import productVideo2 from '../assets/product-video-2.mov';
 import productVideo3 from '../assets/product-video-3.mov';
 import productVideo4 from '../assets/product-video-4.mov';
 
+import {motion, type Variants} from 'framer-motion';
+
+const headingV: Variants = {
+  hidden: {opacity: 0, y: 10},
+  show: {opacity: 1, y: 0, transition: {duration: 0.28, ease: 'easeOut'}},
+};
+
+const gridV: Variants = {
+  hidden: {},
+  show: {transition: {staggerChildren: 0.06, delayChildren: 0.03}},
+};
+
+const cardV: Variants = {
+  hidden: {opacity: 0, y: 10},
+  show: {opacity: 1, y: 0, transition: {duration: 0.28, ease: 'easeOut'}},
+};
+
 export function TestimonialsSection() {
   const testimonials = [
     {
@@ -44,21 +61,30 @@ export function TestimonialsSection() {
       {/* TESTIMONIALS SECTION */}
       <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
         <div className="container mx-auto px-4">
-          {/* was motion.div */}
-          <div className="text-center mb-16">
+          <motion.div className="mb-16 flex flex-col items-center text-center">
             <h2 className="text-4xl md:text-5xl text-white uppercase mb-4">
               What People Are Saying
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who've made Fire Up their
-              energy drink of choice.
-            </p>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <p className="max-w-[46ch] text-center text-gray-400 leading-relaxed">
+              Join thousands of satisfied customers who&apos;ve made Fire Up
+              their energy drink of choice.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+            variants={gridV}
+            initial="hidden"
+            whileInView="show"
+            viewport={{once: true, amount: 0.2}}
+          >
             {testimonials.map((testimonial, index) => (
-              // was motion.div
-              <div key={index}>
+              <motion.div
+                key={index}
+                variants={cardV}
+                style={{willChange: 'transform, opacity'}}
+              >
                 <Card className="bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10 p-6 hover:border-orange-500/30 transition-all duration-300 h-full flex flex-col">
                   <Quote className="w-8 h-8 text-orange-400 mb-4" />
 
@@ -89,61 +115,91 @@ export function TestimonialsSection() {
                     </div>
                   </div>
                 </Card>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* CONTENT SECTION UNDER TESTIMONIALS */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:64px_64px]" />
+      <section className="relative py-20 overflow-hidden">
+        {/* ✅ ORANGE background like your 2nd pic */}
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/35 via-red-600/30 to-yellow-500/25" />
+        <div className="absolute inset-0 bg-black/35" />
+
+        {/* Grid on top */}
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff14_1px,transparent_1px),linear-gradient(to_bottom,#ffffff14_1px,transparent_1px)] bg-[size:64px_64px] opacity-[0.18]" />
+
+        {/* Soft glow */}
+        <div className="absolute -top-48 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-orange-500/25 blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10">
-          {/* was motion.div */}
-          <div className="text-center mb-16">
-            <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
+          <motion.div
+            className="mb-16 flex flex-col items-center text-center"
+            variants={headingV}
+            initial="hidden"
+            whileInView="show"
+            viewport={{once: true, amount: 0.35}}
+            style={{willChange: 'transform, opacity'}}
+          >
+            <Badge className="bg-orange-500/30 text-orange-100 border-orange-200/30 mb-4">
               Our Content
             </Badge>
 
-            <h2 className="text-4xl md:text-5xl text-white uppercase mb-4">
+            <h2 className="text-4xl md:text-5xl text-white uppercase mb-4 text-center">
               Fire Up in Action
             </h2>
 
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            {/* ✅ truly centered */}
+            <p className="mx-auto text-center text-white/80 leading-relaxed max-w-[52ch]">
               See Fire Up in motion – real cans, real energy, real people.
             </p>
 
-            <div className="mt-6 flex justify-center">
+            <div className="mt-6 flex justify-center gap-3">
               <a
                 href="https://www.instagram.com/drinkfireup"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 bg-white/5 hover:bg-orange-500/20 rounded-full flex items-center justify-center text-white hover:text-orange-400 transition-colors"
+                aria-label="Fire Up on Instagram"
+                className="w-11 h-11 rounded-full flex items-center justify-center
+                  bg-black/35 border border-white/20
+                  text-white hover:bg-black/50 hover:border-white/35
+                  transition-colors"
               >
-                <Instagram className="w-5 h-5" />
+                <Instagram className="w-5 h-5 text-white" />
               </a>
+
               <a
                 href="https://www.tiktok.com/@drinkfireup"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Fire Up on TikTok"
-                className="w-10 h-10 bg-white/5 hover:bg-orange-500/20 rounded-full flex items-center justify-center text-white hover:text-orange-400 transition-colors ml-3"
+                className="w-11 h-11 rounded-full flex items-center justify-center
+                  bg-black/35 border border-white/20
+                  text-white hover:bg-black/50 hover:border-white/35
+                  transition-colors"
               >
-                <FaTiktok className="w-5 h-5" />
+                <FaTiktok className="w-5 h-5 text-white" />
               </a>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div
+            className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={gridV}
+            initial="hidden"
+            whileInView="show"
+            viewport={{once: true, amount: 0.2}}
+          >
             {contentShowcase.map((content, index) => (
-              // was motion.div
-              <div
+              <motion.div
                 key={index}
+                variants={cardV}
                 className="group relative overflow-hidden rounded-2xl"
+                style={{willChange: 'transform, opacity'}}
               >
                 <Card
-                  className="bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10 overflow-hidden hover:border-orange-500/30 transition-all duration-300 cursor-pointer"
+                  className="bg-gradient-to-br from-white/5 to-white/[0.02] border-white/10 overflow-hidden hover:border-orange-300/40 transition-all duration-300 cursor-pointer"
                   style={{aspectRatio: '9/16'}}
                 >
                   <div className="relative h-full overflow-hidden">
@@ -153,21 +209,22 @@ export function TestimonialsSection() {
                       muted
                       loop
                       playsInline
+                      preload="metadata"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/20 pointer-events-none" />
 
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <div className="w-14 h-14 rounded-full bg-orange-500/85 flex items-center justify-center backdrop-blur-sm">
                         <Play className="w-7 h-7 text-white ml-1" fill="white" />
                       </div>
                     </div>
                   </div>
                 </Card>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
     </>

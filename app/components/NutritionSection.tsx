@@ -1,4 +1,24 @@
 import {Card} from '~/ui/card';
+import {motion, type Variants} from 'framer-motion';
+
+const wrap: Variants = {
+  hidden: {opacity: 0, y: 8},
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {duration: 0.32, ease: 'easeOut'},
+  },
+};
+
+const cols: Variants = {
+  hidden: {},
+  show: {transition: {staggerChildren: 0.06, delayChildren: 0.05}},
+};
+
+const col: Variants = {
+  hidden: {opacity: 0, y: 6},
+  show: {opacity: 1, y: 0, transition: {duration: 0.28, ease: 'easeOut'}},
+};
 
 export function NutritionSection() {
   const coreRows = [
@@ -22,138 +42,106 @@ export function NutritionSection() {
   ];
 
   return (
-    <section className="py-20 bg-black relative overflow-x-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:64px_64px]" />
+    <section className="relative py-20 bg-black overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:64px_64px] opacity-[0.18]" />
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-500/20 p-8 text-white">
-            <h3 className="text-2xl mb-2 text-center uppercase tracking-wide">
-              Nutrition Facts
-            </h3>
-            <p className="text-center text-sm text-gray-300 mb-8">
-              Average quantities per serving (355 mL) and per 100 mL.
-            </p>
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            variants={wrap}
+            initial="hidden"
+            whileInView="show"
+            viewport={{once: true, amount: 0.35}}
+            style={{willChange: 'transform, opacity'}}
+          >
+            <Card className="relative overflow-hidden rounded-3xl border border-orange-500/25 bg-gradient-to-br from-orange-500/10 via-red-500/10 to-black p-10 md:p-12 shadow-[0_0_60px_rgba(249,115,22,0.12)]">
+              <div className="absolute inset-0 bg-black/25 pointer-events-none" />
 
-            <div className="grid md:grid-cols-2 gap-8">
-              {/* Core nutrition */}
-              <div className="space-y-4 min-w-0">
-                <h4 className="font-semibold text-sm uppercase tracking-wide text-gray-100">
-                  Core Nutrition
-                </h4>
+              <div className="relative">
+                <h3 className="text-3xl md:text-4xl text-center uppercase tracking-wide text-white">
+                  Nutrition Facts
+                </h3>
+                <p className="text-center text-base md:text-lg text-white/70 mt-3 mb-10">
+                  Average quantities per serving (355 mL) and per 100 mL.
+                </p>
 
-                <div className="rounded-2xl border border-white/15 bg-black/40 overflow-hidden">
-                  {/* ✅ make first column shrinkable */}
-                  <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] text-xs uppercase text-gray-300 bg-white/10 px-4 py-2 min-w-0">
-                    <span className="min-w-0">Item</span>
-                    <span className="text-right whitespace-nowrap">Per 355 mL</span>
-                    <span className="text-right whitespace-nowrap">Per 100 mL</span>
-                  </div>
+                <motion.div
+                  className="grid lg:grid-cols-2 gap-10 lg:gap-12"
+                  variants={cols}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{once: true, amount: 0.35}}
+                  style={{willChange: 'transform, opacity'}}
+                >
+                  <motion.div variants={col} style={{willChange: 'transform, opacity'}}>
+                    <NutritionTable title="Core Nutrition" rows={coreRows} />
+                  </motion.div>
 
-                  <div className="divide-y divide-white/10 text-sm">
-                    {coreRows.map((row) => (
-                      <div
-                        key={row.label}
-                        className={`grid grid-cols-[minmax(0,1fr)_auto_auto] px-4 py-2 min-w-0 ${
-                          row.highlight ? 'bg-white/5' : ''
-                        }`}
-                      >
-                        {/* ✅ allow wrapping + prevent overflow */}
-                        <span
-                          className={
-                            row.highlight
-                              ? 'min-w-0 break-words whitespace-normal font-semibold text-orange-200'
-                              : 'min-w-0 break-words whitespace-normal text-gray-200'
-                          }
-                        >
-                          {row.label}
-                        </span>
-
-                        <span
-                          className={
-                            row.highlight
-                              ? 'text-right font-semibold text-orange-100 whitespace-nowrap'
-                              : 'text-right text-gray-100 whitespace-nowrap'
-                          }
-                        >
-                          {row.perServe}
-                        </span>
-
-                        <span
-                          className={
-                            row.highlight
-                              ? 'text-right font-semibold text-orange-300 whitespace-nowrap'
-                              : 'text-right text-gray-300 whitespace-nowrap'
-                          }
-                        >
-                          {row.per100}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  <motion.div variants={col} style={{willChange: 'transform, opacity'}}>
+                    <NutritionTable title="Active Ingredients" rows={activeRows} />
+                  </motion.div>
+                </motion.div>
               </div>
-
-              {/* Active ingredients */}
-              <div className="space-y-4 min-w-0">
-                <h4 className="font-semibold text-sm uppercase tracking-wide text-gray-100">
-                  Active Ingredients
-                </h4>
-
-                <div className="rounded-2xl border border-white/15 bg-black/40 overflow-hidden">
-                  <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] text-xs uppercase text-gray-300 bg-white/10 px-4 py-2 min-w-0">
-                    <span className="min-w-0">Ingredient</span>
-                    <span className="text-right whitespace-nowrap">Per 355 mL</span>
-                    <span className="text-right whitespace-nowrap">Per 100 mL</span>
-                  </div>
-
-                  <div className="divide-y divide-white/10 text-sm">
-                    {activeRows.map((row) => (
-                      <div
-                        key={row.label}
-                        className={`grid grid-cols-[minmax(0,1fr)_auto_auto] px-4 py-2 min-w-0 ${
-                          row.highlight ? 'bg-white/5' : ''
-                        }`}
-                      >
-                        <span
-                          className={
-                            row.highlight
-                              ? 'min-w-0 break-words whitespace-normal font-semibold text-orange-200'
-                              : 'min-w-0 break-words whitespace-normal text-gray-200'
-                          }
-                        >
-                          {row.label}
-                        </span>
-
-                        <span
-                          className={
-                            row.highlight
-                              ? 'text-right font-semibold text-orange-100 whitespace-nowrap'
-                              : 'text-right text-gray-100 whitespace-nowrap'
-                          }
-                        >
-                          {row.perServe}
-                        </span>
-
-                        <span
-                          className={
-                            row.highlight
-                              ? 'text-right font-semibold text-orange-300 whitespace-nowrap'
-                              : 'text-right text-gray-300 whitespace-nowrap'
-                          }
-                        >
-                          {row.per100}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              {/* end */}
-            </div>
-          </Card>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </section>
+  );
+}
+
+function NutritionTable({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: {label: string; perServe: string; per100: string; highlight: boolean}[];
+}) {
+  return (
+    <div className="min-w-0">
+      <h4 className="text-base font-semibold uppercase tracking-wide text-white mb-3">
+        {title}
+      </h4>
+
+      <div className="rounded-2xl border border-white/15 bg-black/60 backdrop-blur-sm overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(120px,auto)_minmax(120px,auto)] gap-4 px-5 py-2.5 bg-white/10 text-[11px] uppercase tracking-wide text-white/70">
+          <span className="min-w-0">Item</span>
+          <span className="text-left whitespace-nowrap">Per 355 mL</span>
+          <span className="text-right whitespace-nowrap">Per 100 mL</span>
+        </div>
+
+        <div className="divide-y divide-white/10">
+          {rows.map((row, idx) => (
+            <div
+              key={row.label}
+              className={[
+                'grid grid-cols-[minmax(0,1fr)_minmax(120px,auto)_minmax(120px,auto)] gap-4 px-5 py-3',
+                idx % 2 === 0 ? 'bg-white/[0.03]' : 'bg-transparent',
+                'hover:bg-white/[0.06] transition-colors',
+              ].join(' ')}
+            >
+              <span className="min-w-0 break-words whitespace-normal text-sm text-white/90">
+                {row.label}
+              </span>
+
+              <span className="text-left whitespace-nowrap text-sm text-white/90">
+                {row.perServe}
+              </span>
+
+              <span
+                className={
+                  row.highlight
+                    ? 'text-right whitespace-nowrap text-sm font-semibold text-orange-400'
+                    : 'text-right whitespace-nowrap text-sm text-white/70'
+                }
+              >
+                {row.per100}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

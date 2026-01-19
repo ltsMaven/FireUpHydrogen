@@ -14,6 +14,8 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
+import {CartDrawerHydrogen} from '~/components/CartDrawerHydrogen';
+
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -56,12 +58,10 @@ export function PageLayout({
 
 function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
   return (
-    <Aside type="cart" heading="CART">
+    <Aside type="cart" heading="Your Cart">
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
-          {(cart) => {
-            return <CartMain cart={cart} layout="aside" />;
-          }}
+          {(cart) => <CartDrawerHydrogen cart={cart} />}
         </Await>
       </Suspense>
     </Aside>

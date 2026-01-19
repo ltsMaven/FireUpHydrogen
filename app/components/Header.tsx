@@ -1,23 +1,26 @@
 // app/components/Header.tsx
-
 import {ShoppingCart, Menu, X} from 'lucide-react';
 import {Button} from '~/ui/button';
 import {Badge} from '~/ui/badge';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, Suspense} from 'react';
 import fireUpLogo from '../assets/fireup-logo.png';
-import {Aside} from '~/components/Aside';
-
+import {Await} from 'react-router';
+import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import {useAside} from '~/components/Aside';
 interface HeaderProps {
   header?: unknown;
-  cart?: unknown;
+  cart?: Promise<CartApiQueryFragment | null>;
   isLoggedIn?: unknown;
   publicStoreDomain?: string;
 }
 
-export function Header({header, cart, isLoggedIn, publicStoreDomain}: HeaderProps) {
+export function Header({header, cart}: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentPage, setCurrentPage] =
     useState<'home' | 'about' | 'contact'>('home');
+
+  // ✅ Hydrogen Aside hook (template style)
+const {open} = useAside();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -28,54 +31,37 @@ export function Header({header, cart, isLoggedIn, publicStoreDomain}: HeaderProp
     else setCurrentPage('home');
   }, []);
 
-  let openCart: (() => void) | undefined;
-  try {
-    // @ts-ignore
-    const {open} = Aside.useAside?.() ?? {};
-    openCart = () => open?.('cart');
-  } catch {
-    openCart = () => console.log('Cart clicked');
-  }
-
-  const cartCount = 0;
-
   const closeMobile = () => setMobileMenuOpen(false);
 
   const linkClasses = (active: boolean) =>
-    `text-sm md:text-base font-semibold tracking-[0.18em] uppercase ${
+    `text-[12px] md:text-[13px] font-semibold tracking-[0.16em] uppercase ${
       active ? '!text-orange-400' : '!text-white'
     } hover:!text-orange-400 transition-colors`;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Logo -> home */}
+    <header className="fixed top-0 left-0 right-0 z-[999] isolate bg-black/85 backdrop-blur-md pointer-events-auto">
+      <div className="container mx-auto px-4 h-14">
+        <div className="h-full flex items-center justify-between">
+          {/* Brand */}
           <a
             href="/"
             onClick={closeMobile}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            className="h-full flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
-            <div className="relative">
-              <img
-                src={fireUpLogo}
-                alt="Fire Up logo"
-                className="w-9 h-9 md:w-10 md:h-10 rounded-xl object-cover shadow-lg"
-              />
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 md:w-3.5 md:h-3.5 bg-yellow-400 rounded-full animate-pulse" />
-            </div>
-            <div className="leading-tight">
-              <h1 className="text-white text-lg md:text-xl font-semibold tracking-[0.2em] uppercase">
+            <img
+              src={fireUpLogo}
+              alt="Fire Up logo"
+              className="w-8 h-8 rounded-lg object-cover shadow-lg shrink-0"
+            />
+            <div className="flex flex-col justify-center leading-none whitespace-nowrap translate-y-[1px]">
+              <h1 className="text-white text-[15px] font-semibold tracking-[0.18em] uppercase leading-[1]">
                 FIRE UP
               </h1>
-              <p className="text-[11px] text-orange-400 mt-0.5">
-                Energy Drink
-              </p>
             </div>
           </a>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-7">
             <a href="/" onClick={closeMobile} className={linkClasses(currentPage === 'home')}>
               Home
             </a>
@@ -91,33 +77,51 @@ export function Header({header, cart, isLoggedIn, publicStoreDomain}: HeaderProp
           </nav>
 
           {/* Cart + mobile menu */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <Button
-              onClick={openCart}
-              className="relative h-9 px-3 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
+              type="button"
+              
+              onClick={() => {
+                console.log('CART CLICKED'); // ✅ debug
+                open('cart');
+              }}
+              className="relative h-8 w-8 p-0 rounded-xl bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
+              aria-label="Open cart"
             >
-              <ShoppingCart className="w-5 h-5" />
-              {cartCount > 0 && (
-                <Badge className="absolute -top-2 -right-2 bg-yellow-400 text-black hover:bg-yellow-400">
-                  {cartCount}
-                </Badge>
-              )}
+              <ShoppingCart className="w-4 h-4" />
+
+              {/* Cart count from Hydrogen cart promise */}
+              {cart ? (
+                <Suspense fallback={null}>
+                  <Await resolve={cart}>
+                    {(c) =>
+                      c?.totalQuantity ? (
+                        <Badge className="absolute -top-2 -right-2 bg-yellow-400 text-black hover:bg-yellow-400 text-[10px] px-1.5 py-0.5">
+                          {c.totalQuantity}
+                        </Badge>
+                      ) : null
+                    }
+                  </Await>
+                </Suspense>
+              ) : null}
             </Button>
 
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden text-white"
+              className="md:hidden text-white h-9 w-9"
               onClick={() => setMobileMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
+              type="button"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
         </div>
 
         {/* Mobile nav */}
         {mobileMenuOpen && (
-          <nav className="md:hidden mt-2 pt-3 flex flex-col items-center gap-2 pb-3">
+          <nav className="md:hidden pb-3 pt-2 flex flex-col items-center gap-2">
             <a href="/" onClick={closeMobile} className={linkClasses(currentPage === 'home')}>
               Home
             </a>
