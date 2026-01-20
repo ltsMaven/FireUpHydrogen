@@ -1,4 +1,4 @@
-// app/components/AboutPageSections.tsx (for example)
+// app/components/AboutPageSections.tsx
 
 import {
   Flame,
@@ -20,6 +20,26 @@ import productImage5 from '../assets/product-image-5.jpeg';
 import productVideo2 from '../assets/product-video-2.mov';
 import productVideo3 from '../assets/product-video-3.mov';
 import productVideo4 from '../assets/product-video-4.mov';
+
+import {motion, type Variants} from 'framer-motion';
+
+/* -------------------- minimal, fast variants -------------------- */
+const sectionV: Variants = {
+  hidden: {opacity: 0, y: 10},
+  show: {opacity: 1, y: 0, transition: {duration: 0.32, ease: 'easeOut'}},
+};
+
+const gridV: Variants = {
+  hidden: {},
+  show: {transition: {staggerChildren: 0.06, delayChildren: 0.03}},
+};
+
+const itemV: Variants = {
+  hidden: {opacity: 0, y: 10},
+  show: {opacity: 1, y: 0, transition: {duration: 0.3, ease: 'easeOut'}},
+};
+
+const viewportOnce = {once: true, amount: 0.25};
 
 export function AboutPageSections() {
   const contentShowcase = [
@@ -98,35 +118,53 @@ export function AboutPageSections() {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
+          <motion.div
+            className="text-center max-w-4xl mx-auto"
+            variants={sectionV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            style={{willChange: 'transform, opacity'}}
+          >
             <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6">
               About Fire Up
             </Badge>
+
             <h1 className="text-5xl md:text-7xl uppercase mb-6 text-white">
               Fueling{' '}
               <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
                 Champions
               </span>
             </h1>
+
             <p className="text-xl text-gray-300 mb-8">
               We&apos;re not just an energy drink company. We&apos;re a movement
               of dreamers, doers, and game-changers who refuse to settle for
               anything less than extraordinary.
             </p>
-          </div>
+          </motion.div>
 
-          <div
+          {/* Stats: animate cards only */}
+          <motion.div
             className="
               max-w-4xl mx-auto mt-16 gap-6
               flex flex-col items-center
               md:grid md:grid-cols-3 md:items-stretch
             "
+            variants={gridV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
           >
             {stats.map((stat, index) => {
               const Icon = stat.icon;
-
               return (
-                <div key={index} className="w-full flex justify-center md:block">
+                <motion.div
+                  key={index}
+                  variants={itemV}
+                  className="w-full flex justify-center md:block"
+                  style={{willChange: 'transform, opacity'}}
+                >
                   <Card className="bg-gradient-to-br from-white/5 to-white/[0.02] border-0 p-6 text-center w-full max-w-xs md:max-w-none">
                     <Icon className="w-8 h-8 text-orange-400 mx-auto mb-3" />
                     <div className="text-3xl bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent mb-1">
@@ -134,10 +172,10 @@ export function AboutPageSections() {
                     </div>
                     <div className="text-sm text-gray-400">{stat.label}</div>
                   </Card>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -145,7 +183,13 @@ export function AboutPageSections() {
       <section className="py-20 relative">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-            <div>
+            <motion.div
+              variants={sectionV}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              style={{willChange: 'transform, opacity'}}
+            >
               <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
                 Our Story
               </Badge>
@@ -158,27 +202,36 @@ export function AboutPageSections() {
               <div className="space-y-4 text-gray-300">
                 <p>
                   Founded in 2024, Fire Up was built off the backend of a dream
-                  two 19 year old boys. To build muscle and look good. Struggling
-                  to maintain energy throughout the day and hit protein intake
-                  targets. Fire Up was born to tackle this, through natural
-                  energy, reliable protein sources﻿ and countless nutritious
-                  ingredients. Everyone can now build their dream body and look
-                  how they desire. Everything you want in life can be achieved in
-                  a can of Fire Up.
+                  two 19 year old boys. To build muscle and look good.
+                  Struggling to maintain energy throughout the day and hit
+                  protein intake targets. Fire Up was born to tackle this,
+                  through natural energy, reliable protein sources﻿ and
+                  countless nutritious ingredients. Everyone can now build their
+                  dream body and look how they desire. Everything you want in
+                  life can be achieved in a can of Fire Up.
                 </p>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="relative">
+            {/* Image: minimal pop-in only (no scaling) */}
+            <motion.div
+              className="relative flex justify-center lg:justify-end"
+              variants={sectionV}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              style={{willChange: 'transform, opacity'}}
+            >
               <div className="relative rounded-2xl overflow-hidden max-w-md w-full">
                 <img
                   src={aboutUsImage}
                   alt="Team"
                   className="w-full h-auto rounded-2xl"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -186,7 +239,14 @@ export function AboutPageSections() {
       {/* Values Section */}
       <section className="py-20 bg-gradient-to-b from-black to-gray-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            variants={sectionV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            style={{willChange: 'transform, opacity'}}
+          >
             <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
               Our Values
             </Badge>
@@ -197,13 +257,23 @@ export function AboutPageSections() {
               These aren&apos;t just words on a wall. They&apos;re the
               principles that guide every decision we make.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
+            variants={gridV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+          >
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
-                <div key={index}>
+                <motion.div
+                  key={index}
+                  variants={itemV}
+                  style={{willChange: 'transform, opacity'}}
+                >
                   <Card className="bg-gradient-to-br from-white/5 to-white/[0.02] border-0 p-6 transition-all duration-300 h-full">
                     <div
                       className={`w-12 h-12 rounded-lg bg-gradient-to-br ${value.color} flex items-center justify-center mb-4`}
@@ -211,14 +281,12 @@ export function AboutPageSections() {
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <h3 className="text-white mb-2">{value.title}</h3>
-                    <p className="text-gray-400 text-sm">
-                      {value.description}
-                    </p>
+                    <p className="text-gray-400 text-sm">{value.description}</p>
                   </Card>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -227,7 +295,14 @@ export function AboutPageSections() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:64px_64px]" />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            variants={sectionV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            style={{willChange: 'transform, opacity'}}
+          >
             <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
               Our Journey
             </Badge>
@@ -238,34 +313,36 @@ export function AboutPageSections() {
               From a garage startup to a global movement. Here&apos;s how we got
               here.
             </p>
-          </div>
+          </motion.div>
 
           <div className="max-w-4xl mx-auto">
             {timeline.map((item, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="relative mb-12 last:mb-0"
+                variants={itemV}
+                initial="hidden"
+                whileInView="show"
+                viewport={viewportOnce}
+                style={{willChange: 'transform, opacity'}}
               >
                 <div className="flex items-start gap-6">
-                  {/* Year Badge */}
                   <div className="flex-shrink-0">
                     <div className="w-20 h-20 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
                       <span className="text-white">{item.year}</span>
                     </div>
                   </div>
 
-                  {/* Content */}
                   <Card className="flex-1 bg-gradient-to-br from-white/5 to-white/[0.02] border-0 p-6 transition-all">
                     <h3 className="text-white mb-2">{item.title}</h3>
                     <p className="text-gray-400 text-sm">{item.description}</p>
                   </Card>
                 </div>
 
-                {/* Connecting Line */}
                 {index < timeline.length - 1 && (
                   <div className="absolute left-10 top-20 w-0.5 h-12 bg-gradient-to-b from-orange-500 to-transparent" />
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -276,7 +353,14 @@ export function AboutPageSections() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:64px_64px]" />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
+          <motion.div
+            className="mb-16 flex flex-col items-center text-center"
+            variants={sectionV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            style={{willChange: 'transform, opacity'}}
+          >
             <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-4">
               Our Content
             </Badge>
@@ -285,7 +369,7 @@ export function AboutPageSections() {
               Fire Up in Action
             </h2>
 
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <p className="mx-auto text-center text-gray-200/80 leading-relaxed max-w-[52ch]">
               See Fire Up in motion – real cans, real energy, real people.
             </p>
 
@@ -294,27 +378,43 @@ export function AboutPageSections() {
                 href="https://www.instagram.com/drinkfireup"
                 target="_blank"
                 rel="noreferrer"
-                className="w-10 h-10 bg-white/5 hover:bg-orange-500/20 rounded-full flex items-center justify-center text-white hover:text-orange-400 transition-colors"
+                aria-label="Fire Up on Instagram"
+                className="w-11 h-11 rounded-full flex items-center justify-center
+                  bg-black/35 border border-white/20
+                  text-white hover:bg-black/50 hover:border-white/35
+                  transition-colors"
               >
-                <Instagram className="w-5 h-5" />
+                <Instagram className="w-5 h-5 text-white" />
               </a>
               <a
                 href="https://www.tiktok.com/@drinkfireup"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Fire Up on TikTok"
-                className="w-10 h-10 bg-white/5 hover:bg-orange-500/20 rounded-full flex items-center justify-center text-white hover:text-orange-400 transition-colors"
+                className="w-11 h-11 rounded-full flex items-center justify-center
+                  bg-black/35 border border-white/20
+                  text-white hover:bg-black/50 hover:border-white/35
+                  transition-colors"
               >
-                <FaTiktok className="w-5 h-5" />
+                <FaTiktok className="w-5 h-5 text-white" />
               </a>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* videos: animate wrapper cards only (NOT the <video>) */}
+          <motion.div
+            className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={gridV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+          >
             {contentShowcase.map((content, index) => (
-              <div
+              <motion.div
                 key={index}
+                variants={itemV}
                 className="group relative overflow-hidden rounded-2xl"
+                style={{willChange: 'transform, opacity'}}
               >
                 <Card
                   className="bg-gradient-to-br from-white/5 to-white/[0.02] border-0 overflow-hidden transition-all duration-300 cursor-pointer"
@@ -327,21 +427,22 @@ export function AboutPageSections() {
                       muted
                       loop
                       playsInline
+                      preload="metadata"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 pointer-events-none" />
 
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <div className="w-14 h-14 rounded-full bg-orange-500/85 flex items-center justify-center backdrop-blur-sm">
-                        <Play className="w-7 h-7 text-white ml-1" />
+                        <Play className="w-7 h-7 text-white ml-1" fill="white" />
                       </div>
                     </div>
                   </div>
                 </Card>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -349,20 +450,32 @@ export function AboutPageSections() {
       <section className="py-20 bg-gradient-to-b from-gray-900 to-black">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-            {/* Image */}
-            <div className="relative flex justify-center lg:justify-start">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-0 bg-gradient-to-br from-white/10 to-white/[0.03] ...">
+            <motion.div
+              className="relative flex justify-center lg:justify-start"
+              variants={sectionV}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              style={{willChange: 'transform, opacity'}}
+            >
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-0 bg-gradient-to-br from-white/10 to-white/[0.03]">
                 <img
                   src={productImage5}
                   alt="Fire Up product"
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               </div>
-            </div>
+            </motion.div>
 
-            {/* Text */}
-            <div>
+            <motion.div
+              variants={sectionV}
+              initial="hidden"
+              whileInView="show"
+              viewport={viewportOnce}
+              style={{willChange: 'transform, opacity'}}
+            >
               <div className="flex items-center gap-3 mb-6">
                 <Target className="w-8 h-8 text-orange-400" />
                 <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30">
@@ -391,7 +504,7 @@ export function AboutPageSections() {
                   takes to make it right.
                 </p>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -401,7 +514,14 @@ export function AboutPageSections() {
         <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 via-red-600/20 to-yellow-600/20 blur-3xl" />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            className="max-w-3xl mx-auto text-center"
+            variants={sectionV}
+            initial="hidden"
+            whileInView="show"
+            viewport={viewportOnce}
+            style={{willChange: 'transform, opacity'}}
+          >
             <h2 className="text-4xl md:text-6xl text-white uppercase mb-6">
               Join the{' '}
               <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
@@ -412,7 +532,7 @@ export function AboutPageSections() {
               Be part of a community that&apos;s redefining what&apos;s
               possible. Your journey starts now.
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>

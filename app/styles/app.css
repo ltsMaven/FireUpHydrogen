@@ -577,3 +577,15 @@ button.reset:hover:not(:has(> *)) {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+
+.contact-form form {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.contact-form [data-slot="input"],
+.contact-form [data-slot="textarea"],
+.contact-form button[data-slot="button"] {
+  width: 100% !important;
+  max-width: none !important;
+}
