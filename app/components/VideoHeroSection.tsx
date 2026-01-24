@@ -66,7 +66,13 @@ export function VideoHeroSection({
   );
 }
 
-function BaseLayout({ Left, Right }: { Left: React.ReactNode; Right: React.ReactNode }) {
+function BaseLayout({
+  Left,
+  Right,
+}: {
+  Left: React.ReactNode;
+  Right: React.ReactNode;
+}) {
   return (
     <section
       id="home"
@@ -86,9 +92,11 @@ function BaseLayout({ Left, Right }: { Left: React.ReactNode; Right: React.React
       <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:64px_64px]" />
 
       <div className="relative z-10 container mx-auto px-4 min-h-screen flex items-start md:items-center pt-32 pb-16 md:pt-40 md:pb-32">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center justify-items-center w-full max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-8 items-center justify-items-stretch lg:justify-items-center w-full max-w-7xl mx-auto">
           {Left}
-          <div className="flex justify-center lg:justify-center w-full">{Right}</div>
+          <div className="flex justify-center lg:justify-center w-full">
+            {Right}
+          </div>
         </div>
       </div>
     </section>
@@ -109,37 +117,60 @@ function StaticHero({
   return (
     <BaseLayout
       Left={
-        <div className="text-center lg:text-left space-y-8">
-          <div className="flex justify-center lg:justify-start mb-6">
-            <div className="relative">
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 p-[3px] shadow-[0_0_32px_rgba(249,115,22,0.6)]">
-                <div className="w-full h-full rounded-2xl bg-black flex items-center justify-center">
-                  <img
-                    src={fireUpLogo}
-                    alt="Fire Up logo"
-                    className="w-full h-full rounded-2xl object-contain"
-                  />
-                </div>
-              </div>
+        <motion.div
+          variants={leftContainer}
+          initial="hidden"
+          animate="show"
+          className="
+      w-full max-w-xl mx-auto
+      space-y-8
+      text-center lg:text-left
+      lg:pl-12
+    "
+        >
+          {/* Logo + Title group */}
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col items-center gap-6 lg:items-start"
+          >
+            {/* Logo */}
+            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+              <img
+                src={fireUpLogo}
+                alt="Fire Up logo"
+                className="w-full h-full rounded-2xl object-contain"
+              />
             </div>
-          </div>
 
-          <div className="space-y-4">
-            <h1 className="text-6xl md:text-8xl lg:text-[7rem] uppercase tracking-tight leading-[0.9]">
+            {/* Title */}
+            <h1 className="text-5xl md:text-7xl lg:text-8xl uppercase tracking-tight leading-[0.9]">
               <span className="text-white font-bold">FIRE</span>{' '}
               <span className="text-red-400 font-bold">UP</span>
             </h1>
-            <p className="text-xl md:text-3xl lg:text-4xl text-white/90 uppercase tracking-wider">
-              THE WORLD FIRST ENERGY DRINK WITH 31 GRAMS OF PROTEIN
-            </p>
-          </div>
+          </motion.div>
 
-          <p className="text-gray-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0">
+          {/* Tagline */}
+          <motion.p
+            variants={fadeUp}
+            className="text-xl md:text-3xl lg:text-4xl text-white/90 uppercase tracking-wider"
+          >
+            THE WORLD FIRST ENERGY DRINK WITH 31 GRAMS OF PROTEIN
+          </motion.p>
+
+          {/* Description */}
+          <motion.p
+            variants={fadeUp}
+            className="text-gray-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0"
+          >
             Zero sugar. Maximum energy. The premium energy drink engineered for
             champions who refuse to settle.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4">
+          {/* Buttons (only THIS is flex) */}
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4"
+          >
             <Button
               onClick={onShopNow}
               size="lg"
@@ -156,8 +187,8 @@ function StaticHero({
             >
               Discover More
             </Button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       }
       Right={
         // ✅ CHANGED: pull slightly toward the text on lg screens
@@ -220,69 +251,68 @@ function MotionHero({
   return (
     <BaseLayout
       Left={
-        <motion.div
-          className="text-center lg:text-left space-y-8"
-          variants={leftContainer}
-          initial="hidden"
-          animate="show"
-        >
+        <div className="w-full flex justify-center lg:justify-end">
           <motion.div
-            variants={fadeUp}
-            className="flex justify-center lg:justify-start mb-6"
+            className="w-full max-w-xl space-y-8 text-center lg:text-left"
+            variants={leftContainer}
+            initial="hidden"
+            animate="show"
           >
-            <div className="relative">
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 p-[3px] shadow-[0_0_32px_rgba(249,115,22,0.6)]">
-                <div className="w-full h-full rounded-2xl bg-black flex items-center justify-center">
-                  <img
-                    src={fireUpLogo}
-                    alt="Fire Up logo"
-                    className="w-full h-full rounded-2xl object-contain"
-                  />
-                </div>
+            <motion.div
+              variants={fadeUp}
+              className="flex justify-center lg:justify-start mb-6"
+            >
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                <img
+                  src={fireUpLogo}
+                  alt="Fire Up logo"
+                  className="w-full h-full rounded-2xl object-contain"
+                />
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
 
-          <motion.div variants={fadeUp} className="space-y-4">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl uppercase tracking-tight">
-              <span className="text-white font-bold">FIRE</span>{' '}
-              <span className="text-red-400 font-bold">UP</span>
-            </h1>
-            <p className="text-xl md:text-3xl lg:text-4xl text-white/90 uppercase tracking-wider">
-              THE WORLD FIRST ENERGY DRINK WITH 31 GRAMS OF PROTEIN
-            </p>
-          </motion.div>
+            <motion.div variants={fadeUp} className="space-y-4">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl uppercase tracking-tight leading-[0.95]">
+                <span className="text-white font-bold">FIRE</span>{' '}
+                <span className="text-red-400 font-bold">UP</span>
+              </h1>
 
-          <motion.p
-            variants={fadeUp}
-            className="text-gray-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0"
-          >
-            Zero sugar. Maximum energy. The premium energy drink engineered for
-            champions who refuse to settle.
-          </motion.p>
+              <p className="text-xl md:text-3xl lg:text-4xl text-white/90 uppercase tracking-wider">
+                THE WORLD FIRST ENERGY DRINK WITH 31 GRAMS OF PROTEIN
+              </p>
+            </motion.div>
 
-          <motion.div
-            variants={fadeUp}
-            className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4"
-          >
-            <Button
-              onClick={onShopNow}
-              size="lg"
-              className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group text-lg px-8 py-6"
+            <motion.p
+              variants={fadeUp}
+              className="text-gray-400 text-base md:text-lg max-w-xl mx-auto lg:mx-0"
             >
-              Shop Now
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
+              Zero sugar. Maximum energy. The premium energy drink engineered
+              for champions who refuse to settle.
+            </motion.p>
 
-            <Button
-              size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-6 shadow-lg border border-orange-400/60"
-              onClick={onDiscoverMore}
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-wrap gap-4 justify-center lg:justify-start pt-4"
             >
-              Discover More
-            </Button>
+              <Button
+                onClick={onShopNow}
+                size="lg"
+                className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group text-lg px-8 py-6"
+              >
+                Shop Now
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+
+              <Button
+                size="lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-6 shadow-lg border border-orange-400/60"
+                onClick={onDiscoverMore}
+              >
+                Discover More
+              </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       }
       Right={
         <motion.div

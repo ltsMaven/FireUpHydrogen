@@ -1,7 +1,10 @@
+import {CartForm} from '@shopify/hydrogen';
 import {ShoppingCart, Star, Package, Shield, Zap} from 'lucide-react';
-import {Button} from '~/ui/button';
 import {Badge} from '~/ui/badge';
+import {useParams} from 'react-router';
+import {Button} from '~/ui/button';
 import {Card} from '~/ui/card';
+import {useAside} from '~/components/Aside';
 import {useState} from 'react';
 import {
   Carousel,
@@ -13,20 +16,16 @@ import {
 } from '~/ui/carousel';
 import productImage2 from '../assets/product-image-2.png';
 import productImage3 from '../assets/product-image-3.png';
-
 import {motion, type Variants} from 'framer-motion';
 
 interface ProductSectionProps {
-  onAddToCart: (quantity: number) => void;
+  /** Shopify ProductVariant GID, e.g. gid://shopify/ProductVariant/123 */
+  merchandiseId: string;
 }
 
 const sectionV: Variants = {
   hidden: {opacity: 0, y: 10},
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {duration: 0.28, ease: 'easeOut'},
-  },
+  show: {opacity: 1, y: 0, transition: {duration: 0.28, ease: 'easeOut'}},
 };
 
 const leftV: Variants = {
@@ -47,10 +46,17 @@ const rightV: Variants = {
   },
 };
 
-export function ProductSection({onAddToCart}: ProductSectionProps) {
+export function ProductSection({merchandiseId}: ProductSectionProps) {
+  const {open} = useAside();
+  const params = useParams();
+  const locale = (params as any).locale as string | undefined;
+  const cartRoute = locale ? `/${locale}/cart` : '/cart';
+
   const [quantity, setQuantity] = useState(1);
-  const [selectedPack, setSelectedPack] =
-    useState<'single' | 'pack6' | 'pack12'>('single');
+  const [selectedPack, setSelectedPack] = useState<
+    'single' | 'pack6' | 'pack12'
+  >('single');
+
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -85,22 +91,17 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
     single: {price: 3.99, cans: 1, savings: 0},
     pack6: {price: 21.99, cans: 6, savings: 10},
     pack12: {price: 39.99, cans: 12, savings: 20},
-  };
+  } as const;
 
   const currentPack = packs[selectedPack];
-
-  const handleAddToCartClick = () => {
-    onAddToCart(quantity * currentPack.cans);
-  };
+  const linesQuantity = quantity * currentPack.cans;
+  const addQty = quantity * currentPack.cans;
 
   const handleCarouselSelect = (api: CarouselApi) => {
     if (!api) return;
     setCarouselApi(api);
     setCurrentSlide(api.selectedScrollSnap());
-
-    api.on('select', () => {
-      setCurrentSlide(api.selectedScrollSnap());
-    });
+    api.on('select', () => setCurrentSlide(api.selectedScrollSnap()));
   };
 
   const scrollToSlide = (index: number) => {
@@ -112,7 +113,6 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
       <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 via-red-600/20 to-yellow-600/20 blur-2xl" />
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* ✅ animate ONLY the heading block */}
         <motion.div
           className="text-center mb-12"
           variants={sectionV}
@@ -133,7 +133,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
         </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
-          {/* ✅ animate ONLY the left carousel container */}
+          {/* Left: carousel */}
           <motion.div
             className="relative"
             variants={leftV}
@@ -143,7 +143,10 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
             style={{willChange: 'transform, opacity'}}
           >
             <div className="relative bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-3xl p-8 border border-orange-500/20">
-              <Carousel className="w-full max-w-sm mx-auto" setApi={handleCarouselSelect}>
+              <Carousel
+                className="w-full max-w-sm mx-auto"
+                setApi={handleCarouselSelect}
+              >
                 <CarouselContent>
                   {productImages.map((image, index) => (
                     <CarouselItem key={index}>
@@ -175,6 +178,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
               {productImages.map((image, index) => (
                 <button
                   key={index}
+                  type="button"
                   onClick={() => scrollToSlide(index)}
                   className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
                     currentSlide === index
@@ -196,7 +200,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
             </div>
           </motion.div>
 
-          {/* ✅ animate ONLY the right details container */}
+          {/* Right: details */}
           <motion.div
             className="space-y-6"
             variants={rightV}
@@ -219,11 +223,15 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
 
               <div className="flex items-center gap-2 mb-2">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <Star
+                    key={star}
+                    className="w-5 h-5 fill-yellow-400 text-yellow-400"
+                  />
                 ))}
                 <span className="text-gray-400">(2,847 reviews)</span>
               </div>
 
+              {/* Ingredients details block unchanged */}
               <div className="mt-4">
                 <details
                   className="group bg-gradient-to-r from-orange-500/15 via-red-500/15 to-yellow-400/15 border border-white/60 rounded-xl shadow-[0_0_30px_rgba(248,113,113,0.35)] overflow-hidden"
@@ -239,19 +247,23 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
                           Full Ingredient Breakdown
                         </span>
                         <span className="text-xs text-gray-200">
-                          Collagen, taurine, natural caffeine, vitamins, and more.
+                          Collagen, taurine, natural caffeine, vitamins, and
+                          more.
                         </span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-orange-100 ml-4">
                       <span>{totalIngredients} ingredients</span>
-                      <span className="transition-transform group-open:rotate-180">▲</span>
+                      <span className="transition-transform group-open:rotate-180">
+                        ▲
+                      </span>
                     </div>
                   </summary>
 
                   <div className="px-4 pb-4 pt-3 text-sm text-gray-100 bg-black/40 border-t border-white/40 space-y-3">
                     <p className="text-xs text-gray-300">
-                      Crafted for clean energy, smooth mouthfeel, and bold flavour—without the sugar crash.
+                      Crafted for clean energy, smooth mouthfeel, and bold
+                      flavour—without the sugar crash.
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {ingredients.map((item) => (
@@ -273,6 +285,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
               <label className="text-white mb-3 block">Choose Your Pack</label>
               <div className="grid grid-cols-3 gap-3">
                 <button
+                  type="button"
                   onClick={() => setSelectedPack('single')}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     selectedPack === 'single'
@@ -285,6 +298,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setSelectedPack('pack6')}
                   className={`p-4 rounded-lg border-2 transition-all relative ${
                     selectedPack === 'pack6'
@@ -302,6 +316,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setSelectedPack('pack12')}
                   className={`p-4 rounded-lg border-2 transition-all relative ${
                     selectedPack === 'pack12'
@@ -326,6 +341,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
               <div className="flex items-center gap-4">
                 <div className="flex items-center border border-white/20 rounded-lg overflow-hidden">
                   <button
+                    type="button"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white transition-colors"
                   >
@@ -333,6 +349,7 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
                   </button>
                   <span className="px-6 text-white">{quantity}</span>
                   <button
+                    type="button"
                     onClick={() => setQuantity(quantity + 1)}
                     className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white transition-colors"
                   >
@@ -340,19 +357,37 @@ export function ProductSection({onAddToCart}: ProductSectionProps) {
                   </button>
                 </div>
                 <span className="text-gray-400">
-                  {quantity * currentPack.cans} can{quantity * currentPack.cans > 1 ? 's' : ''} total
+                  {linesQuantity} can{linesQuantity > 1 ? 's' : ''} total
                 </span>
               </div>
             </div>
 
-            <Button
-              onClick={handleAddToCartClick}
-              size="lg"
-              className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group"
+            {/* ✅ REAL Hydrogen add-to-cart */}
+            <CartForm
+              route={cartRoute}
+              action={CartForm.ACTIONS.LinesAdd}
+              inputs={{lines: [{merchandiseId, quantity: addQty}]}}
             >
-              <ShoppingCart className="w-5 h-5 mr-2" />
-              Add to Cart - ${(currentPack.price * quantity).toFixed(2)}
-            </Button>
+              <Button
+                type="submit"
+                size="lg"
+                onClick={() => {
+                  console.log(
+                    'ADD merchId:',
+                    merchandiseId,
+                    'qty:',
+                    addQty,
+                    'route:',
+                    cartRoute,
+                  );
+                  open('cart');
+                }}
+                className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group"
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
+                Add to Cart - ${(currentPack.price * quantity).toFixed(2)}
+              </Button>
+            </CartForm>
 
             <div className="grid grid-cols-3 gap-4 pt-4">
               <Card className="bg-white/5 border-white/10 p-4 text-center">

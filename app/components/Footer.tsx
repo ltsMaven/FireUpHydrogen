@@ -1,25 +1,43 @@
 import {Instagram, Mail} from 'lucide-react';
 import {FaTiktok} from 'react-icons/fa';
 import fireUpLogo from '../assets/fireup-logo.png';
+import {useNavigate} from 'react-router';
+import {Link} from 'react-router';
+
+type Page = 'home' | 'about' | 'contact' | 'terms';
 
 interface FooterProps {
   footer?: unknown;
   header?: unknown;
   publicStoreDomain?: string;
-  onNavigate?: (page: 'home' | 'about' | 'contact', section?: string) => void;
+  onNavigate?: (page: Exclude<Page, 'terms'>, section?: string) => void;
 }
 
 export function Footer({onNavigate}: FooterProps) {
-  const handleNavClick = (page: 'home' | 'about' | 'contact', section?: string) => {
+  const navigate = useNavigate();
+
+  const handleNavClick = (page: Page, section?: string) => {
+    if (page === 'terms') {
+      const path = window.location.pathname;
+      const parts = path.split('/').filter(Boolean);
+
+      const maybeLocale = parts[0];
+      const hasLocale = !!maybeLocale && maybeLocale.length === 2;
+
+      navigate(hasLocale ? `/${maybeLocale}/terms` : '/terms');
+      return;
+    }
+
     onNavigate?.(page, section);
 
     if (section) {
       setTimeout(() => {
         document.getElementById(section)?.scrollIntoView({behavior: 'smooth'});
       }, 100);
-    } else {
-      window.scrollTo({top: 0, behavior: 'smooth'});
+      return;
     }
+
+    window.scrollTo({top: 0, behavior: 'smooth'});
   };
 
   return (
@@ -51,6 +69,7 @@ export function Footer({onNavigate}: FooterProps) {
                 target="_blank"
                 rel="noreferrer"
                 className="w-10 h-10 bg-white/5 hover:bg-orange-500/20 rounded-full flex items-center justify-center text-white hover:text-orange-400 transition-colors"
+                aria-label="Fire Up on Instagram"
               >
                 <Instagram className="w-5 h-5" />
               </a>
@@ -66,8 +85,9 @@ export function Footer({onNavigate}: FooterProps) {
               </a>
 
               <a
-                href="#"
+                href="mailto:support@fireup.com"
                 className="w-10 h-10 bg-white/5 hover:bg-orange-500/20 rounded-full flex items-center justify-center text-white hover:text-orange-400 transition-colors"
+                aria-label="Email Fire Up"
               >
                 <Mail className="w-5 h-5" />
               </a>
@@ -80,6 +100,7 @@ export function Footer({onNavigate}: FooterProps) {
             <ul className="space-y-2">
               <li>
                 <button
+                  type="button"
                   onClick={() => handleNavClick('home')}
                   className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
@@ -88,6 +109,7 @@ export function Footer({onNavigate}: FooterProps) {
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => handleNavClick('home', 'product')}
                   className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
@@ -96,6 +118,7 @@ export function Footer({onNavigate}: FooterProps) {
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => handleNavClick('about')}
                   className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
@@ -104,6 +127,7 @@ export function Footer({onNavigate}: FooterProps) {
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => handleNavClick('contact')}
                   className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
@@ -119,17 +143,30 @@ export function Footer({onNavigate}: FooterProps) {
             <ul className="space-y-2">
               <li>
                 <button
+                  type="button"
                   onClick={() => handleNavClick('contact', 'faq')}
                   className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
                   FAQ
                 </button>
               </li>
+
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate('terms'); // ✅ relative to current locale segment
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                  }}
+                  className="text-gray-400 hover:text-orange-400 transition-colors"
+                >
+                  Terms &amp; Conditions
+                </button>
+              </li>
             </ul>
           </div>
         </div>
 
-        {/* Removed the border line here */}
         <div className="pt-8 text-center text-gray-400 text-sm">
           <p>&copy; 2025 Fire Up Energy Drink. All rights reserved.</p>
         </div>
