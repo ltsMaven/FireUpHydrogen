@@ -4,7 +4,7 @@ import {Avatar, AvatarFallback} from '~/ui/avatar';
 import {Badge} from '~/ui/badge';
 import {FaTiktok} from 'react-icons/fa';
 
-import productVideo2 from '../assets/product-video-2.mov';
+import productVideo2 from 'https://cdn.shopify.com/videos/c/o/v/59440a8ceb1b4c718fa0e4a41ca59c99.mov';
 import productVideo3 from '../assets/product-video-3.mov';
 import productVideo4 from '../assets/product-video-4.mov';
 
@@ -217,7 +217,10 @@ export function TestimonialsSection() {
 
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                       <div className="w-14 h-14 rounded-full bg-orange-500/85 flex items-center justify-center backdrop-blur-sm">
-                        <Play className="w-7 h-7 text-white ml-1" fill="white" />
+                        <Play
+                          className="w-7 h-7 text-white ml-1"
+                          fill="white"
+                        />
                       </div>
                     </div>
                   </div>
