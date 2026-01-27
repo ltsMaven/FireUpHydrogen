@@ -108,6 +108,11 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
   const canAdd =
     Boolean(merchandiseId) && (selectedVariant?.availableForSale ?? true);
 
+    
+  console.log('ProductSection selectedVariant:', selectedVariant);
+  console.log('selectedVariant.id:', selectedVariant?.id);
+  console.log('availableForSale:', selectedVariant?.availableForSale);
+
   const handleCarouselSelect = (api: CarouselApi) => {
     if (!api) return;
     setCarouselApi(api);
