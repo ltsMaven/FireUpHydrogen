@@ -18,9 +18,17 @@ import productImage2 from '../assets/product-image-2.png';
 import productImage3 from '../assets/product-image-3.png';
 import {motion, type Variants} from 'framer-motion';
 
+type SelectedVariant = {
+  id: string;
+  availableForSale?: boolean | null;
+  title?: string | null;
+  image?: {url?: string | null; altText?: string | null} | null;
+  price?: {amount: string; currencyCode: string} | null;
+  product?: {title?: string | null; handle?: string | null} | null;
+};
+
 interface ProductSectionProps {
-  /** Shopify ProductVariant GID, e.g. gid://shopify/ProductVariant/123 */
-  merchandiseId: string;
+  selectedVariant: SelectedVariant;
 }
 
 const sectionV: Variants = {
@@ -46,7 +54,7 @@ const rightV: Variants = {
   },
 };
 
-export function ProductSection({merchandiseId}: ProductSectionProps) {
+export function ProductSection({selectedVariant}: ProductSectionProps) {
   const {open} = useAside();
   const params = useParams();
   const locale = (params as any).locale as string | undefined;
@@ -96,6 +104,9 @@ export function ProductSection({merchandiseId}: ProductSectionProps) {
   const currentPack = packs[selectedPack];
   const linesQuantity = quantity * currentPack.cans;
   const addQty = quantity * currentPack.cans;
+  const merchandiseId = selectedVariant?.id;
+  const canAdd =
+    Boolean(merchandiseId) && (selectedVariant?.availableForSale ?? true);
 
   const handleCarouselSelect = (api: CarouselApi) => {
     if (!api) return;
@@ -366,11 +377,22 @@ export function ProductSection({merchandiseId}: ProductSectionProps) {
             <CartForm
               route={cartRoute}
               action={CartForm.ACTIONS.LinesAdd}
-              inputs={{lines: [{merchandiseId, quantity: addQty}]}}
+              inputs={{
+                lines: merchandiseId
+                  ? [
+                      {
+                        merchandiseId,
+                        quantity: addQty,
+                        selectedVariant, // ✅ enables useOptimisticCart
+                      },
+                    ]
+                  : [],
+              }}
             >
               <Button
                 type="submit"
                 size="lg"
+                disabled={!canAdd}
                 onClick={() => {
                   console.log(
                     'ADD merchId:',
@@ -385,7 +407,9 @@ export function ProductSection({merchandiseId}: ProductSectionProps) {
                 className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group"
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
-                Add to Cart - ${(currentPack.price * quantity).toFixed(2)}
+                {canAdd
+                  ? `Add to Cart - $${(currentPack.price * quantity).toFixed(2)}`
+                  : 'Variant missing / Sold out'}
               </Button>
             </CartForm>
 
