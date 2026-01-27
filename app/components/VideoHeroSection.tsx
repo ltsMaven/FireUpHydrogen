@@ -3,8 +3,10 @@ import {ArrowRight, Play} from 'lucide-react';
 import {Button} from '~/ui/button';
 import {useEffect, useState} from 'react';
 import fireUpLogo from '../assets/fireup-logo.png';
-import productVideo from 'https://cdn.shopify.com/videos/c/o/v/670c3296701e4b1aa8157eb146e5970a.mp4';
+// import productVideo from 'https://cdn.shopify.com/videos/c/o/v/670c3296701e4b1aa8157eb146e5970a.mp4';
 import {motion, type Variants} from 'framer-motion';
+const productVideo =
+  'https://cdn.shopify.com/videos/c/o/v/670c3296701e4b1aa8157eb146e5970a.mp4';
 
 interface VideoHeroSectionProps {
   onShopNow: () => void;
