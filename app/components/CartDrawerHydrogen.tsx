@@ -1,23 +1,20 @@
 import {CartForm, Money, useOptimisticCart} from '@shopify/hydrogen';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
-import {X, Trash2, Plus, Minus, ShoppingBag} from 'lucide-react';
+import {Trash2, Plus, Minus, ShoppingBag} from 'lucide-react';
 import {Button} from '~/ui/button';
-import {Badge} from '~/ui/badge';
 import {useAside} from '~/components/Aside';
 import {useParams} from 'react-router';
 
-type VariantLike = {
-  product?: {title?: string | null} | null;
-  title?: string | null;
-  image?: {url?: string | null; altText?: string | null} | null;
-  price?: {amount: string; currencyCode: string} | null;
-};
+type CartLineNode = NonNullable<CartApiQueryFragment>['lines']['nodes'][number];
 
-function isVariantLike(m: unknown): m is VariantLike {
+type ProductVariantMerchandise = Extract<
+  CartLineNode['merchandise'],
+  {__typename: 'ProductVariant'}
+>;
+
+function isProductVariant(m: unknown): m is ProductVariantMerchandise {
   return (
-    !!m &&
-    typeof m === 'object' &&
-    ('product' in m || 'price' in m || 'image' in m)
+    !!m && typeof m === 'object' && (m as any).__typename === 'ProductVariant'
   );
 }
 
@@ -27,46 +24,24 @@ export function CartDrawerHydrogen({
   cart: CartApiQueryFragment | null;
 }) {
   const {close} = useAside();
-
-  // ✅ optimistic cart makes add/remove show instantly
   const optimisticCart = useOptimisticCart(cart);
 
-  // ✅ you can keep locale route, but "/cart" is the standard route in docs
   const params = useParams();
   const locale = (params as any).locale as string | undefined;
   const cartRoute = locale ? `/${locale}/cart` : '/cart';
 
-  const lines = optimisticCart?.lines?.nodes ?? [];
-  const itemCount = lines.reduce((sum, l) => sum + (l?.quantity ?? 0), 0);
+  const lines = optimisticCart?.lines?.nodes?.filter(Boolean) ?? [];
+  const itemCount = lines.reduce((sum, l: any) => sum + (l?.quantity ?? 0), 0);
 
   const subtotal = optimisticCart?.cost?.subtotalAmount ?? null;
   const total = optimisticCart?.cost?.totalAmount ?? null;
-
   const checkoutUrl = (optimisticCart as any)?.checkoutUrl as
     | string
     | undefined;
 
   return (
     <div className="h-full flex flex-col bg-gray-900">
-      <div className="flex items-center justify-between p-6 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <ShoppingBag className="w-6 h-6 text-orange-400" />
-          <h2 className="text-white text-xl">Your Cart</h2>
-          {itemCount > 0 && (
-            <Badge className="bg-orange-500">{itemCount}</Badge>
-          )}
-        </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={close}
-          className="text-white hover:bg-white/10"
-          aria-label="Close cart"
-        >
-          <X className="w-6 h-6" />
-        </Button>
-      </div>
+      {/* ✅ No custom header here — Aside already provides the title + one close (X) */}
 
       <div className="flex-1 overflow-y-auto p-6">
         {lines.length === 0 ? (
@@ -86,14 +61,14 @@ export function CartDrawerHydrogen({
         ) : (
           <div className="space-y-4">
             {lines.map((line: any) => {
-              const m = line?.merchandise;
-              if (m.__typename !== 'ProductVariant') return null;
+              const m = line.merchandise;
+              const variant = m?.__typename === 'ProductVariant' ? m : null;
 
-              const productTitle = m.product?.title ?? 'Product';
-              const variantTitle = m.title ?? null;
-              const imageUrl = m.image?.url ?? null;
-              const imageAlt = m.image?.altText ?? productTitle;
-              const price = m.price; // ✅ MoneyV2
+              const productTitle = variant?.product?.title ?? 'Product';
+              const variantTitle = variant?.title ?? null;
+              const imageUrl = variant?.image?.url ?? null;
+              const imageAlt = variant?.image?.altText ?? productTitle;
+              const price = variant?.price ?? null;
 
               return (
                 <div

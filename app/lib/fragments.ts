@@ -4,6 +4,7 @@ export const CART_QUERY_FRAGMENT = `#graphql
     currencyCode
     amount
   }
+
   fragment CartLine on CartLine {
     id
     quantity
@@ -23,15 +24,12 @@ export const CART_QUERY_FRAGMENT = `#graphql
       }
     }
     merchandise {
+      __typename
       ... on ProductVariant {
         id
         availableForSale
-        compareAtPrice {
-          ...Money
-        }
-        price {
-          ...Money
-        }
+        compareAtPrice { ...Money }
+        price { ...Money }
         requiresShipping
         title
         image {
@@ -40,7 +38,6 @@ export const CART_QUERY_FRAGMENT = `#graphql
           altText
           width
           height
-
         }
         product {
           handle
@@ -55,6 +52,7 @@ export const CART_QUERY_FRAGMENT = `#graphql
       }
     }
   }
+
   fragment CartLineComponent on ComponentizableCartLine {
     id
     quantity
@@ -63,26 +61,17 @@ export const CART_QUERY_FRAGMENT = `#graphql
       value
     }
     cost {
-      totalAmount {
-        ...Money
-      }
-      amountPerQuantity {
-        ...Money
-      }
-      compareAtAmountPerQuantity {
-        ...Money
-      }
+      totalAmount { ...Money }
+      amountPerQuantity { ...Money }
+      compareAtAmountPerQuantity { ...Money }
     }
     merchandise {
+      __typename
       ... on ProductVariant {
         id
         availableForSale
-        compareAtPrice {
-          ...Money
-        }
-        price {
-          ...Money
-        }
+        compareAtPrice { ...Money }
+        price { ...Money }
         requiresShipping
         title
         image {
@@ -105,61 +94,30 @@ export const CART_QUERY_FRAGMENT = `#graphql
       }
     }
   }
+
   fragment CartApiQuery on Cart {
     updatedAt
     id
-    appliedGiftCards {
-      id
-      lastCharacters
-      amountUsed {
-        ...Money
-      }
-    }
     checkoutUrl
     totalQuantity
-    buyerIdentity {
-      countryCode
-      customer {
-        id
-        email
-        firstName
-        lastName
-        displayName
-      }
-      email
-      phone
-    }
+
     lines(first: $numCartLines) {
       nodes {
         ...CartLine
-      }
-      nodes {
         ...CartLineComponent
       }
     }
+
     cost {
-      subtotalAmount {
-        ...Money
-      }
-      totalAmount {
-        ...Money
-      }
-      totalDutyAmount {
-        ...Money
-      }
-      totalTaxAmount {
-        ...Money
-      }
+      subtotalAmount { ...Money }
+      totalAmount { ...Money }
+      totalDutyAmount { ...Money }
+      totalTaxAmount { ...Money }
     }
+
     note
-    attributes {
-      key
-      value
-    }
-    discountCodes {
-      code
-      applicable
-    }
+    attributes { key value }
+    discountCodes { code applicable }
   }
 ` as const;
 
