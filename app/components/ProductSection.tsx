@@ -5,7 +5,7 @@ import {useParams} from 'react-router';
 import {Button} from '~/ui/button';
 import {Card} from '~/ui/card';
 import {useAside} from '~/components/Aside';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {
   Carousel,
   CarouselContent,
@@ -107,16 +107,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
   const merchandiseId = selectedVariant?.id;
   const canAdd =
     Boolean(merchandiseId) && (selectedVariant?.availableForSale ?? true);
-
-  useEffect(() => {
-    console.log('[CLIENT] ProductSection mounted');
-    console.log('[CLIENT] selectedVariant:', selectedVariant);
-    console.log('[CLIENT] id:', selectedVariant?.id);
-    console.log(
-      '[CLIENT] availableForSale:',
-      selectedVariant?.availableForSale,
-    );
-  }, [selectedVariant]);
 
   const handleCarouselSelect = (api: CarouselApi) => {
     if (!api) return;
