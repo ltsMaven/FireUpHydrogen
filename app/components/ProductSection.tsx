@@ -135,7 +135,7 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
           <h2 className="text-4xl md:text-5xl text-white uppercase mb-4">
             Fire Up Energy Drink
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-400 max-w-2xl mx-auto text-center">
             355ml of pure energy. Zero sugar, maximum performance.
           </p>
         </motion.div>
@@ -208,9 +208,8 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
             </div>
           </motion.div>
 
-          {/* Right: details */}
           <motion.div
-            className="space-y-6"
+            className="space-y-6 w-full max-w-xl"
             variants={rightV}
             initial="hidden"
             whileInView="show"
@@ -236,7 +235,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                     className="w-5 h-5 fill-yellow-400 text-yellow-400"
                   />
                 ))}
-                <span className="text-gray-400">(2,847 reviews)</span>
               </div>
 
               {/* Ingredients details block unchanged */}
