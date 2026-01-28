@@ -61,9 +61,7 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
   const cartRoute = locale ? `/${locale}/cart` : '/cart';
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedPack, setSelectedPack] = useState<
-    'single' | 'pack6' | 'pack12'
-  >('single');
+  const [selectedPack, setSelectedPack] = useState<'pack4' | 'pack12'>('pack4');
 
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -96,9 +94,8 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
   const totalIngredients = ingredients.length;
 
   const packs = {
-    single: {price: 3.99, cans: 1, savings: 0},
-    pack6: {price: 21.99, cans: 6, savings: 10},
-    pack12: {price: 39.99, cans: 12, savings: 20},
+    pack4: {price: 16.99, cans: 4, savings: 0},
+    pack12: {price: 47.99, cans: 12, savings: 20},
   } as const;
 
   const currentPack = packs[selectedPack];
@@ -294,36 +291,18 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
             {/* Pack selection */}
             <div>
               <label className="text-white mb-3 block">Choose Your Pack</label>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setSelectedPack('single')}
+                  onClick={() => setSelectedPack('pack4')}
                   className={`p-4 rounded-lg border-2 transition-all ${
-                    selectedPack === 'single'
+                    selectedPack === 'pack4'
                       ? 'border-orange-500 bg-orange-500/10'
                       : 'border-white/10 hover:border-white/20 bg-white/5'
                   }`}
                 >
-                  <div className="text-white">Single</div>
-                  <div className="text-sm text-gray-400">1 Can</div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedPack('pack6')}
-                  className={`p-4 rounded-lg border-2 transition-all relative ${
-                    selectedPack === 'pack6'
-                      ? 'border-orange-500 bg-orange-500/10'
-                      : 'border-white/10 hover:border-white/20 bg-white/5'
-                  }`}
-                >
-                  {packs.pack6.savings > 0 && (
-                    <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
-                      -10%
-                    </div>
-                  )}
-                  <div className="text-white">6-Pack</div>
-                  <div className="text-sm text-gray-400">6 Cans</div>
+                  <div className="text-white">4-Pack</div>
+                  <div className="text-sm text-gray-400">4 Cans</div>
                 </button>
 
                 <button
@@ -337,7 +316,7 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                 >
                   {packs.pack12.savings > 0 && (
                     <div className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
-                      -20%
+                      -{packs.pack12.savings}%
                     </div>
                   )}
                   <div className="text-white">12-Pack</div>
