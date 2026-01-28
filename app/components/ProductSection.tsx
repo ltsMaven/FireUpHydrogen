@@ -135,7 +135,7 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
           <h2 className="text-4xl md:text-5xl text-white uppercase mb-4">
             Fire Up Energy Drink
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-center">
+          <p className="text-gray-300/90 w-full max-w-4xl mx-auto text-center leading-relaxed">
             355ml of pure energy. Zero sugar, maximum performance.
           </p>
         </motion.div>
@@ -350,45 +350,47 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
               </div>
             </div>
 
-            {/* ✅ REAL Hydrogen add-to-cart */}
-            <CartForm
-              route={cartRoute}
-              action={CartForm.ACTIONS.LinesAdd}
-              inputs={{
-                lines: merchandiseId
-                  ? [
-                      {
-                        merchandiseId,
-                        quantity: addQty,
-                        selectedVariant, // ✅ enables useOptimisticCart
-                      },
-                    ]
-                  : [],
-              }}
-            >
-              <Button
-                type="submit"
-                size="lg"
-                disabled={!canAdd}
-                onClick={() => {
-                  console.log(
-                    'ADD merchId:',
-                    merchandiseId,
-                    'qty:',
-                    addQty,
-                    'route:',
-                    cartRoute,
-                  );
-                  open('cart');
+            <div className="w-full">
+              <CartForm
+                route={cartRoute}
+                action={CartForm.ACTIONS.LinesAdd}
+                inputs={{
+                  lines: merchandiseId
+                    ? [
+                        {
+                          merchandiseId,
+                          quantity: addQty,
+                          selectedVariant,
+                        },
+                      ]
+                    : [],
                 }}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 group"
               >
-                <ShoppingCart className="w-5 h-5 mr-2" />
-                {canAdd
-                  ? `Add to Cart - $${(currentPack.price * quantity).toFixed(2)}`
-                  : 'Variant missing / Sold out'}
-              </Button>
-            </CartForm>
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={!canAdd}
+                  onClick={() => {
+                    open('cart');
+                  }}
+                  className="
+        w-full h-12 md:h-14
+        rounded-2xl
+        text-base md:text-lg font-semibold tracking-wide
+        bg-gradient-to-r from-orange-500 to-red-600
+        hover:from-orange-600 hover:to-red-700
+        shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30
+        transition-all duration-200 active:scale-[0.99]
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70
+      "
+                >
+                  <ShoppingCart className="w-5 h-5 mr-2" />
+                  {canAdd
+                    ? `Add to Cart — $${(currentPack.price * quantity).toFixed(2)}`
+                    : 'Variant missing / Sold out'}
+                </Button>
+              </CartForm>
+            </div>
 
             <div className="grid grid-cols-3 gap-4 pt-4">
               <Card className="bg-white/5 border-white/10 p-4 text-center">

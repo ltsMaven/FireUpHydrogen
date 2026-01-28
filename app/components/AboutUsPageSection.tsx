@@ -19,7 +19,7 @@ import aboutUsImage from '../assets/about-us.webp';
 import productImage5 from '../assets/product-image-5.webp';
 // import productVideo2 from 'https://cdn.shopify.com/videos/c/o/v/59440a8ceb1b4c718fa0e4a41ca59c99.mov';
 const productVideo2 =
-  'https://cdn.shopify.com/videos/c/o/v/59440a8ceb1b4c718fa0e4a41ca59c99.mov';
+  'https://cdn.shopify.com/videos/c/o/v/49b6f671a3454bf085718b79ca848dfd.mp4';
 import productVideo3 from '../assets/product-video-3.mp4';
 import productVideo4 from '../assets/product-video-4.mp4';
 
