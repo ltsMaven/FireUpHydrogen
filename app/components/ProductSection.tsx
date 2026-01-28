@@ -14,8 +14,8 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '~/ui/carousel';
-import productImage2 from '../assets/product-image-2.png';
-import productImage3 from '../assets/product-image-3.png';
+import productImage2 from '../assets/product-image-2.webp';
+import productImage3 from '../assets/product-image-3.webp';
 import {motion, type Variants} from 'framer-motion';
 
 type SelectedVariant = {

@@ -15,8 +15,8 @@ import {Card} from '~/ui/card';
 import {Badge} from '~/ui/badge';
 import {FaTiktok} from 'react-icons/fa';
 
-import aboutUsImage from '../assets/about-us.png';
-import productImage5 from '../assets/product-image-5.jpeg';
+import aboutUsImage from '../assets/about-us.webp';
+import productImage5 from '../assets/product-image-5.webp';
 // import productVideo2 from 'https://cdn.shopify.com/videos/c/o/v/59440a8ceb1b4c718fa0e4a41ca59c99.mov';
 const productVideo2 =
   'https://cdn.shopify.com/videos/c/o/v/59440a8ceb1b4c718fa0e4a41ca59c99.mov';
