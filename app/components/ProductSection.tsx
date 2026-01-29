@@ -174,13 +174,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                   <CarouselPrevious className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-black/60 border-white/20 hover:bg-black/80 text-white" />
                   <CarouselNext className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-black/60 border-white/20 hover:bg-black/80 text-white" />
                 </Carousel>
-
-                <div className="absolute top-8 right-8 bg-yellow-400 text-white px-4 py-2 rounded-full rotate-12 z-10">
-                  <span className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-current text-white" />
-                    <span>Best Seller</span>
-                  </span>
-                </div>
               </div>
 
               <div className="flex gap-3 mt-6 justify-center">

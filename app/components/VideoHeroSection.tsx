@@ -4,7 +4,7 @@ import {Button} from '~/ui/button';
 import {useEffect, useState} from 'react';
 import fireUpLogo from '../assets/fireup-logo.png';
 // import productVideo from 'https://cdn.shopify.com/videos/c/o/v/670c3296701e4b1aa8157eb146e5970a.mp4';
-import {motion, type Variants} from 'framer-motion';
+import {motion, useReducedMotion, type Variants} from 'framer-motion';
 const productVideo =
   'https://cdn.shopify.com/videos/c/o/v/401c9495a69744cca790808fc314e66f.mp4';
 
@@ -14,27 +14,37 @@ interface VideoHeroSectionProps {
 }
 
 const leftContainer: Variants = {
-  hidden: {opacity: 0},
+  hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: {staggerChildren: 0.12, delayChildren: 0.15},
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.05,
+    },
   },
 };
 
 const fadeUp: Variants = {
-  hidden: {opacity: 0, y: 18},
-  show: {opacity: 1, y: 0, transition: {duration: 0.6, ease: 'easeOut'}},
+  hidden: { opacity: 0, y: 8 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.32, ease: 'easeOut' },
+  },
 };
 
 const rightCard: Variants = {
-  hidden: {opacity: 0, x: 40, scale: 0.98},
+  hidden: { opacity: 0, x: 12 },
   show: {
     opacity: 1,
     x: 0,
-    scale: 1,
-    transition: {duration: 0.7, ease: 'easeOut', delay: 0.15},
+    transition: { duration: 0.35, ease: 'easeOut', delay: 0.05 },
   },
 };
+
+const reduceMotion = useReducedMotion();
+
+const t = reduceMotion ? {duration: 0} : {duration: 0.35, ease: 'easeOut'};
 
 export function VideoHeroSection({
   onShopNow,
@@ -42,8 +52,6 @@ export function VideoHeroSection({
 }: VideoHeroSectionProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // ✅ SSR: show static content
-  // ✅ Client: swap to motion version AFTER mount so animation runs
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
