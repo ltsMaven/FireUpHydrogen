@@ -137,8 +137,7 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
             <h2 className="text-4xl md:text-5xl text-white uppercase mb-4">
               Fire Up Energy Drink
             </h2>
-
-            <p className="text-gray-300/90 mx-auto max-w-3xl text-center leading-relaxed">
+            <p className="text-gray-300/90 text-center leading-relaxed">
               355ml of pure energy. Zero sugar, maximum performance.
             </p>
           </motion.div>
