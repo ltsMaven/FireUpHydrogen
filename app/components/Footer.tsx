@@ -29,6 +29,15 @@ export function Footer({onNavigate}: FooterProps) {
       return;
     }
 
+    if (page === 'home' && section === 'product') {
+      navigate(`${prefix}/#product`);
+      return;
+    }
+    if (page === 'contact' && section === 'faq') {
+      navigate(`${prefix}/#faq`);
+      return;
+    }
+
     const targetRoute =
       page === 'home'
         ? `${prefix}/`
@@ -123,17 +132,13 @@ export function Footer({onNavigate}: FooterProps) {
               </li>
 
               <li>
-                <a
-                  href={`${prefix}/#product`}
-                  className="
-    inline-block
-    text-gray-400 hover:text-orange-400 transition-colors
-    visited:text-gray-400 visited:hover:text-orange-400
-    no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/50 rounded
-  "
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('home', 'product')}
+                  className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
-                  Product
-                </a>
+                  Home
+                </button>
               </li>
 
               <li>
