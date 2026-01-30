@@ -125,7 +125,12 @@ export function Footer({onNavigate}: FooterProps) {
               <li>
                 <a
                   href={`${prefix}/#product`}
-                  className="inline-block text-gray-400 hover:text-orange-400 transition-colors no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/50 rounded"
+                  className="
+    inline-block
+    text-gray-400 hover:text-orange-400 transition-colors
+    visited:text-gray-400 visited:hover:text-orange-400
+    no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/50 rounded
+  "
                 >
                   Product
                 </a>
