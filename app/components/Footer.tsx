@@ -34,7 +34,7 @@ export function Footer({onNavigate}: FooterProps) {
       return;
     }
     if (page === 'contact' && section === 'faq') {
-      navigate(`${prefix}/#faq`);
+      navigate(`${prefix}/contact#faq`);
       return;
     }
 
@@ -137,7 +137,7 @@ export function Footer({onNavigate}: FooterProps) {
                   onClick={() => handleNavClick('home', 'product')}
                   className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
-                  Home
+                  Product
                 </button>
               </li>
 

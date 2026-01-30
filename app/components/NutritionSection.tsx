@@ -22,23 +22,58 @@ const col: Variants = {
 
 export function NutritionSection() {
   const coreRows = [
-    {label: 'Energy', perServe: '540 kJ (129 Cal)', per100: '152 kJ (36 Cal)', highlight: true},
+    {
+      label: 'Energy',
+      perServe: '540 kJ (129 Cal)',
+      per100: '152 kJ (36 Cal)',
+      highlight: true,
+    },
     {label: 'Protein', perServe: '31 g', per100: '8.7 g', highlight: true},
     {label: 'Fat, total', perServe: '0 g', per100: '0 g', highlight: false},
     {label: '– Saturated', perServe: '0 g', per100: '0 g', highlight: false},
-    {label: 'Carbohydrate', perServe: '1.1 g', per100: '0.3 g', highlight: false},
+    {
+      label: 'Carbohydrate',
+      perServe: '1.1 g',
+      per100: '0.3 g',
+      highlight: false,
+    },
     {label: '– Sugars', perServe: '0 g', per100: '0 g', highlight: true},
     {label: 'Sodium', perServe: '40.1 mg', per100: '11.3 mg', highlight: false},
   ];
 
   const activeRows = [
-    {label: 'Caffeine', perServe: '112.9 mg', per100: '31.8 mg', highlight: true},
+    {
+      label: 'Caffeine',
+      perServe: '112.9 mg',
+      per100: '31.8 mg',
+      highlight: true,
+    },
     {label: 'Vitamin C', perServe: '28.4 mg', per100: '8 mg', highlight: false},
-    {label: 'Vitamin B6', perServe: '1.5 mg', per100: '0.42 mg', highlight: false},
-    {label: 'Vitamin B12', perServe: '0.5 µg', per100: '0.14 µg', highlight: false},
+    {
+      label: 'Vitamin B6',
+      perServe: '1.5 mg',
+      per100: '0.42 mg',
+      highlight: false,
+    },
+    {
+      label: 'Vitamin B12',
+      perServe: '0.5 µg',
+      per100: '0.14 µg',
+      highlight: false,
+    },
     {label: 'Taurine', perServe: '500.6 mg', per100: '141 mg', highlight: true},
-    {label: 'Ginseng root extract', perServe: '100 mg', per100: '28.2 mg', highlight: true},
-    {label: 'Guarana seed extract', perServe: '300 mg', per100: '84.5 mg', highlight: true},
+    {
+      label: 'Ginseng root extract',
+      perServe: '100 mg',
+      per100: '28.2 mg',
+      highlight: true,
+    },
+    {
+      label: 'Guarana seed extract',
+      perServe: '300 mg',
+      per100: '84.5 mg',
+      highlight: true,
+    },
   ];
 
   return (
@@ -74,12 +109,21 @@ export function NutritionSection() {
                   viewport={{once: true, amount: 0.35}}
                   style={{willChange: 'transform, opacity'}}
                 >
-                  <motion.div variants={col} style={{willChange: 'transform, opacity'}}>
+                  <motion.div
+                    variants={col}
+                    style={{willChange: 'transform, opacity'}}
+                  >
                     <NutritionTable title="Core Nutrition" rows={coreRows} />
                   </motion.div>
 
-                  <motion.div variants={col} style={{willChange: 'transform, opacity'}}>
-                    <NutritionTable title="Active Ingredients" rows={activeRows} />
+                  <motion.div
+                    variants={col}
+                    style={{willChange: 'transform, opacity'}}
+                  >
+                    <NutritionTable
+                      title="Active Ingredients"
+                      rows={activeRows}
+                    />
                   </motion.div>
                 </motion.div>
               </div>
@@ -90,7 +134,6 @@ export function NutritionSection() {
     </section>
   );
 }
-
 function NutritionTable({
   title,
   rows,
@@ -104,8 +147,47 @@ function NutritionTable({
         {title}
       </h4>
 
-      <div className="rounded-2xl border border-white/15 bg-black/60 backdrop-blur-sm overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-        <div className="grid grid-cols-[minmax(0,1fr)_minmax(120px,auto)_minmax(120px,auto)] gap-4 px-5 py-2.5 bg-white/10 text-[11px] uppercase tracking-wide text-white/70">
+      {/* ✅ MOBILE: stacked rows (no 3-col squeeze) */}
+      <div className="md:hidden space-y-2">
+        {rows.map((row) => (
+          <div
+            key={row.label}
+            className="rounded-2xl border border-white/15 bg-black/60 backdrop-blur-sm px-4 py-3"
+          >
+            <div className="text-sm text-white/90 break-words">{row.label}</div>
+
+            <div className="mt-2 grid grid-cols-2 gap-3 text-[12px]">
+              <div className="rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2">
+                <div className="text-white/60 uppercase tracking-wide text-[10px]">
+                  Per 355 mL
+                </div>
+                <div className="mt-0.5 text-white/90 tabular-nums">
+                  {row.perServe}
+                </div>
+              </div>
+
+              <div className="rounded-xl bg-white/[0.04] border border-white/10 px-3 py-2">
+                <div className="text-white/60 uppercase tracking-wide text-[10px] text-right">
+                  Per 100 mL
+                </div>
+                <div
+                  className={
+                    row.highlight
+                      ? 'mt-0.5 text-right font-semibold text-orange-400 tabular-nums'
+                      : 'mt-0.5 text-right text-white/80 tabular-nums'
+                  }
+                >
+                  {row.per100}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ✅ DESKTOP: your current table */}
+      <div className="hidden md:block rounded-2xl border border-white/15 bg-black/60 backdrop-blur-sm overflow-hidden shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(140px,auto)_minmax(140px,auto)] gap-4 px-5 py-2.5 bg-white/10 text-[11px] uppercase tracking-wide text-white/70">
           <span className="min-w-0">Item</span>
           <span className="text-left whitespace-nowrap">Per 355 mL</span>
           <span className="text-right whitespace-nowrap">Per 100 mL</span>
@@ -116,7 +198,7 @@ function NutritionTable({
             <div
               key={row.label}
               className={[
-                'grid grid-cols-[minmax(0,1fr)_minmax(120px,auto)_minmax(120px,auto)] gap-4 px-5 py-3',
+                'grid grid-cols-[minmax(0,1fr)_minmax(140px,auto)_minmax(140px,auto)] gap-4 px-5 py-3',
                 idx % 2 === 0 ? 'bg-white/[0.03]' : 'bg-transparent',
                 'hover:bg-white/[0.06] transition-colors',
               ].join(' ')}
@@ -125,15 +207,15 @@ function NutritionTable({
                 {row.label}
               </span>
 
-              <span className="text-left whitespace-nowrap text-sm text-white/90">
+              <span className="text-left whitespace-nowrap text-sm text-white/90 tabular-nums">
                 {row.perServe}
               </span>
 
               <span
                 className={
                   row.highlight
-                    ? 'text-right whitespace-nowrap text-sm font-semibold text-orange-400'
-                    : 'text-right whitespace-nowrap text-sm text-white/70'
+                    ? 'text-right whitespace-nowrap text-sm font-semibold text-orange-400 tabular-nums'
+                    : 'text-right whitespace-nowrap text-sm text-white/70 tabular-nums'
                 }
               >
                 {row.per100}
