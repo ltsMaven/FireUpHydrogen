@@ -2,7 +2,7 @@ import {Instagram, Mail} from 'lucide-react';
 import {FaTiktok} from 'react-icons/fa';
 import fireUpLogo from '../assets/fireup-logo.png';
 import {useNavigate} from 'react-router';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 
 type Page = 'home' | 'about' | 'contact' | 'terms';
 
@@ -17,26 +17,47 @@ export function Footer({onNavigate}: FooterProps) {
   const navigate = useNavigate();
 
   const handleNavClick = (page: Page, section?: string) => {
+    const path = window.location.pathname;
+    const parts = path.split('/').filter(Boolean);
+    const maybeLocale = parts[0];
+    const hasLocale = !!maybeLocale && maybeLocale.length === 2;
+    const prefix = hasLocale ? `/${maybeLocale}` : '';
+
+    // Terms page is a real route
     if (page === 'terms') {
-      const path = window.location.pathname;
-      const parts = path.split('/').filter(Boolean);
-
-      const maybeLocale = parts[0];
-      const hasLocale = !!maybeLocale && maybeLocale.length === 2;
-
-      navigate(hasLocale ? `/${maybeLocale}/terms` : '/terms');
+      navigate(`${prefix}/terms`);
       return;
     }
 
-    onNavigate?.(page, section);
+    // Decide destination route
+    // If your HOME page contains sections like #product/#contact/#faq:
+    const targetRoute =
+      page === 'home'
+        ? `${prefix}/`
+        : page === 'about'
+          ? `${prefix}/about`
+          : page === 'contact'
+            ? `${prefix}/#contact`
+            : `${prefix}/`;
 
-    if (section) {
+    // If "Product" / "FAQ" etc should always scroll on HOME:
+    const shouldScrollOnHome = Boolean(section);
+    const homeRoute = `${prefix}/`;
+
+    if (shouldScrollOnHome) {
+      // go home first, then scroll after route change
+      navigate(homeRoute);
+
+      // wait a tick for the new page to render
       setTimeout(() => {
-        document.getElementById(section)?.scrollIntoView({behavior: 'smooth'});
-      }, 100);
+        document.getElementById(section!)?.scrollIntoView({behavior: 'smooth'});
+      }, 200);
+
       return;
     }
 
+    // For About / Contact as pages:
+    navigate(targetRoute);
     window.scrollTo({top: 0, behavior: 'smooth'});
   };
 
@@ -155,7 +176,7 @@ export function Footer({onNavigate}: FooterProps) {
                 <button
                   type="button"
                   onClick={() => {
-                    navigate('terms'); // ✅ relative to current locale segment
+                    handleNavClick('terms'); // ✅ relative to current locale segment
                     window.scrollTo({top: 0, behavior: 'smooth'});
                   }}
                   className="text-gray-400 hover:text-orange-400 transition-colors"
