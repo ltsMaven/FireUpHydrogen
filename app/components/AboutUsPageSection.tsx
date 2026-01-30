@@ -15,6 +15,8 @@ import {Card} from '~/ui/card';
 import {Badge} from '~/ui/badge';
 import {FaTiktok} from 'react-icons/fa';
 import {Button} from '~/ui/button';
+import {useNavigate} from 'react-router';
+import {useParams} from 'react-router';
 
 import aboutUsImage from '../assets/about-us.webp';
 import productImage5 from '../assets/product-image-5.webp';
@@ -108,6 +110,24 @@ export function AboutPageSections() {
     {icon: Award, value: '15+', label: 'Industry Awards'},
     {icon: Rocket, value: '10M+', label: 'Cans Sold'},
   ];
+  const navigate = useNavigate();
+  const params = useParams();
+  const locale = (params as any).locale as string | undefined;
+  const prefix = locale ? `/${locale}` : '';
+
+  const goToSection = (id: string) => {
+    navigate(`${prefix}/#${id}`);
+
+    // wait for route render, then scroll
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const headerOffset = 96;
+      const y = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }, 150);
+  };
 
   return (
     <div className="min-h-screen bg-black">
@@ -541,16 +561,7 @@ export function AboutPageSections() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
                 type="button"
-                onClick={() => {
-                  const el = document.getElementById('product');
-                  if (!el) return;
-                  const headerOffset = 96; // adjust if your navbar height differs
-                  const y =
-                    el.getBoundingClientRect().top +
-                    window.scrollY -
-                    headerOffset;
-                  window.scrollTo({top: y, behavior: 'smooth'});
-                }}
+                onClick={() => goToSection('product')}
                 size="lg"
                 className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
               >
@@ -559,16 +570,7 @@ export function AboutPageSections() {
 
               <Button
                 type="button"
-                onClick={() => {
-                  const el = document.getElementById('contact');
-                  if (!el) return;
-                  const headerOffset = 96;
-                  const y =
-                    el.getBoundingClientRect().top +
-                    window.scrollY -
-                    headerOffset;
-                  window.scrollTo({top: y, behavior: 'smooth'});
-                }}
+                onClick={() => goToSection('contact')}
                 size="lg"
                 variant="outline"
                 className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10"
