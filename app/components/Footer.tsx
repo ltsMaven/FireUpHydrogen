@@ -122,11 +122,10 @@ export function Footer({onNavigate}: FooterProps) {
                 </button>
               </li>
 
-              {/* ✅ now works, same behavior as header */}
               <li>
                 <a
                   href={`${prefix}/#product`}
-                  className="text-gray-400 hover:text-orange-400 transition-colors"
+                  className="inline-block text-gray-400 hover:text-orange-400 transition-colors no-underline focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/50 rounded"
                 >
                   Product
                 </a>

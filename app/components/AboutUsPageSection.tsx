@@ -570,7 +570,7 @@ export function AboutPageSections() {
 
               <Button
                 type="button"
-                onClick={() => goToSection('contact')}
+                onClick={() => navigate(`${prefix}/contact`)}
                 size="lg"
                 variant="outline"
                 className="w-full sm:w-auto border-white/20 text-white hover:bg-white/10"
