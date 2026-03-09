@@ -2,7 +2,43 @@ import {useLoaderData} from 'react-router';
 import type {Route} from './+types/($locale)._index';
 import {HomePageSections} from '~/components/HomePageSections';
 
-export const meta: Route.MetaFunction = () => [{title: 'Fire Up | Home'}];
+export const meta: Route.MetaFunction = ({location}) => {
+  const title = 'Fire Up Energy Drink | Zero Sugar, 31g Protein';
+  const description =
+    'Fire Up is a zero-sugar energy drink with 31g protein. Clean energy, great taste, built for performance.';
+
+  const ORIGIN = 'https://shopfireup.com';
+
+  const pathname = location?.pathname ?? '/';
+  const canonical = `${ORIGIN}${pathname}`;
+
+  const ogImage = `${ORIGIN}/og/home.png`;
+
+  return [
+    {title},
+    {name: 'description', content: description},
+    {rel: 'canonical', href: canonical},
+    {name: 'robots', content: 'index,follow'},
+
+    // Open Graph
+    {property: 'og:type', content: 'website'},
+    {property: 'og:site_name', content: 'Fire Up'},
+    {property: 'og:title', content: title},
+    {property: 'og:description', content: description},
+    {property: 'og:url', content: canonical},
+    {property: 'og:image', content: ogImage},
+    // optional but recommended
+    {property: 'og:image:alt', content: 'Fire Up Energy Drink'},
+    {property: 'og:image:width', content: '1200'},
+    {property: 'og:image:height', content: '630'},
+
+    // Twitter
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
+    {name: 'twitter:image', content: ogImage},
+  ];
+};
 
 export async function loader({context}: Route.LoaderArgs) {
   const data = await context.storefront.query(HOME_FEATURED_VARIANT_QUERY);
@@ -15,10 +51,6 @@ export async function loader({context}: Route.LoaderArgs) {
 
 export default function Homepage() {
   const {selectedVariant} = useLoaderData<typeof loader>();
-
-  const handleAddToCart = (quantity: number) => {
-    console.log('Add to cart clicked with qty:', quantity);
-  };
 
   const scrollToProduct = () => {
     const el = document.getElementById('product');

@@ -44,7 +44,7 @@ export function ContactPage() {
     {
       icon: Mail,
       title: 'Email Us',
-      detail: 'support@fireup.com',
+      detail: 'fireupenergydrink@gmail.com',
       description: 'Send us an email anytime',
       color: 'from-blue-500 to-cyan-600',
     },

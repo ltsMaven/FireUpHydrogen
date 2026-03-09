@@ -9,7 +9,7 @@ import {
   Scripts,
   ScrollRestoration,
   useRouteLoaderData,
-  Await
+  Await,
 } from 'react-router';
 import type {Route} from './+types/root';
 import favicon from '~/assets/favicon.svg';
@@ -26,6 +26,25 @@ import {Aside} from '~/components/Aside';
 import {CartDrawerHydrogen} from '~/components/CartDrawerHydrogen';
 
 export type RootLoader = typeof loader;
+export const meta: Route.MetaFunction = () => {
+  const siteName = 'Fire Up Energy Drink';
+  const description =
+    'Zero-sugar energy drink with 31g protein. Clean energy, great taste, built for performance.';
+
+  return [
+    {title: siteName},
+    {name: 'description', content: description},
+    {name: 'robots', content: 'index,follow'},
+    {name: 'theme-color', content: '#000000'},
+
+    // Social defaults (routes can override)
+    {property: 'og:site_name', content: siteName},
+    {property: 'og:type', content: 'website'},
+    {property: 'og:title', content: siteName},
+    {property: 'og:description', content: description},
+    {name: 'twitter:card', content: 'summary_large_image'},
+  ];
+};
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   formMethod,
@@ -131,7 +150,11 @@ export default function App() {
   if (!data) return <Outlet />;
 
   return (
-    <Analytics.Provider cart={data.cart} shop={data.shop} consent={data.consent}>
+    <Analytics.Provider
+      cart={data.cart}
+      shop={data.shop}
+      consent={data.consent}
+    >
       {/* ✅ use Aside.Provider */}
       <Aside.Provider>
         <PageLayout {...data}>
