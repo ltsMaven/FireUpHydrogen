@@ -5,25 +5,28 @@ import {ProductSection} from '~/components/ProductSection';
 import {NutritionSection} from '~/components/NutritionSection';
 import {TestimonialsSection} from '~/components/TestimonialSection';
 
-export type SelectedVariant = {
+export type Variant = {
   id: string;
   availableForSale?: boolean | null;
   title?: string | null;
   image?: {url?: string | null; altText?: string | null} | null;
   price?: {amount: string; currencyCode: string} | null;
+  selectedOptions?: Array<{name: string; value: string}> | null;
   product?: {title?: string | null; handle?: string | null} | null;
 };
 
 export interface HomePageSectionsProps {
   scrollToProduct: () => void;
-  onDiscoverMore: () => void; // ✅ add this
-  selectedVariant: SelectedVariant | null;
+  onDiscoverMore: () => void;
+  product: {title?: string | null; handle?: string | null} | null;
+  variants: Variant[];
 }
 
 export function HomePageSections({
   scrollToProduct,
   onDiscoverMore,
-  selectedVariant,
+  product,
+  variants,
 }: HomePageSectionsProps) {
   return (
     <main className="bg-black text-white">
@@ -36,11 +39,11 @@ export function HomePageSections({
       <BenefitsSection />
       <NutritionSection />
 
-      {selectedVariant ? (
-        <ProductSection selectedVariant={selectedVariant} />
+      {variants.length > 0 ? (
+        <ProductSection variants={variants} />
       ) : (
         <div className="py-16 text-center text-white/70">
-          No product variant found yet.
+          No product variants found yet.
         </div>
       )}
 

@@ -18,17 +18,18 @@ import productImage2 from '../assets/product-image-2.webp';
 import productImage3 from '../assets/product-image-3.webp';
 import {motion, type Variants} from 'framer-motion';
 
-type SelectedVariant = {
+type Variant = {
   id: string;
   availableForSale?: boolean | null;
   title?: string | null;
-  image?: {url?: string | null; altText?: string | null} | null;
   price?: {amount: string; currencyCode: string} | null;
+  image?: {url?: string | null; altText?: string | null} | null;
+  selectedOptions?: Array<{name: string; value: string}> | null;
   product?: {title?: string | null; handle?: string | null} | null;
 };
 
 interface ProductSectionProps {
-  selectedVariant: SelectedVariant;
+  variants: Variant[];
 }
 
 const sectionV: Variants = {
@@ -54,7 +55,7 @@ const rightV: Variants = {
   },
 };
 
-export function ProductSection({selectedVariant}: ProductSectionProps) {
+export function ProductSection({variants}: ProductSectionProps) {
   const {open} = useAside();
   const params = useParams();
   const locale = (params as any).locale as string | undefined;
@@ -62,7 +63,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
 
   const [quantity, setQuantity] = useState(1);
   const [selectedPack, setSelectedPack] = useState<'pack4' | 'pack12'>('pack4');
-
   const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -94,16 +94,32 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
   const totalIngredients = ingredients.length;
 
   const packs = {
-    pack4: {price: 16.99, cans: 4, savings: 0},
-    pack12: {price: 47.99, cans: 12, savings: 20},
+    pack4: {cans: 4, savings: 0},
+    pack12: {cans: 12, savings: 20},
   } as const;
 
   const currentPack = packs[selectedPack];
+  const desiredLabel = selectedPack === 'pack4' ? '4 Pack' : '12 Pack';
+
+  const activeVariant =
+    variants.find((v) =>
+      v.selectedOptions?.some(
+        (opt) =>
+          opt.name.toLowerCase() === 'pack size' && opt.value === desiredLabel,
+      ),
+    ) ?? variants[0];
+
+  const merchandiseId = activeVariant?.id;
+  const canAdd =
+    Boolean(merchandiseId) && (activeVariant?.availableForSale ?? true);
+
+  const unitPrice = activeVariant?.price
+    ? Number(activeVariant.price.amount)
+    : 0;
+
+  const totalPrice = unitPrice * quantity;
   const linesQuantity = quantity * currentPack.cans;
   const addQty = quantity;
-  const merchandiseId = selectedVariant?.id;
-  const canAdd =
-    Boolean(merchandiseId) && (selectedVariant?.availableForSale ?? true);
 
   const handleCarouselSelect = (api: CarouselApi) => {
     if (!api) return;
@@ -213,7 +229,7 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
               <div>
                 <div className="flex items-baseline gap-3 mb-4">
                   <span className="text-4xl text-white">
-                    ${currentPack.price.toFixed(2)}
+                    {activeVariant?.price ? `$${unitPrice.toFixed(2)}` : '$—'}
                   </span>
                   {currentPack.savings > 0 && (
                     <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
@@ -231,7 +247,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                   ))}
                 </div>
 
-                {/* Ingredients details block unchanged */}
                 <div className="mt-4">
                   <details
                     className="group bg-gradient-to-r from-orange-500/15 via-red-500/15 to-yellow-400/15 border border-white/60 rounded-xl shadow-[0_0_30px_rgba(248,113,113,0.35)] overflow-hidden"
@@ -280,7 +295,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                 </div>
               </div>
 
-              {/* Pack selection */}
               <div>
                 <label className="text-white mb-3 block">
                   Choose Your Pack
@@ -319,7 +333,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                 </div>
               </div>
 
-              {/* Quantity */}
               <div>
                 <label className="text-white mb-3 block">Quantity</label>
                 <div className="flex items-center gap-4">
@@ -356,7 +369,6 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                           {
                             merchandiseId,
                             quantity: addQty,
-                            selectedVariant,
                             attributes: [
                               {
                                 key: 'packSize',
@@ -364,10 +376,7 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                               },
                               {
                                 key: 'packLabel',
-                                value:
-                                  selectedPack === 'pack4'
-                                    ? '4 Pack'
-                                    : '12 Pack',
+                                value: desiredLabel,
                               },
                             ],
                           },
@@ -383,19 +392,19 @@ export function ProductSection({selectedVariant}: ProductSectionProps) {
                       open('cart');
                     }}
                     className="
-        w-full h-12 md:h-14
-        rounded-2xl
-        text-base md:text-lg font-semibold tracking-wide
-        bg-gradient-to-r from-orange-500 to-red-600
-        hover:from-orange-600 hover:to-red-700
-        shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30
-        transition-all duration-200 active:scale-[0.99]
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70
-      "
+                      w-full h-12 md:h-14
+                      rounded-2xl
+                      text-base md:text-lg font-semibold tracking-wide
+                      bg-gradient-to-r from-orange-500 to-red-600
+                      hover:from-orange-600 hover:to-red-700
+                      shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30
+                      transition-all duration-200 active:scale-[0.99]
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70
+                    "
                   >
                     <ShoppingCart className="w-5 h-5 mr-2" />
                     {canAdd
-                      ? `Add to Cart — $${(currentPack.price * quantity).toFixed(2)}`
+                      ? `Add to Cart — $${totalPrice.toFixed(2)}`
                       : 'Variant missing / Sold out'}
                   </Button>
                 </CartForm>

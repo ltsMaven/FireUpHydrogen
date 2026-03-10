@@ -8,10 +8,8 @@ export const meta: Route.MetaFunction = ({location}) => {
     'Fire Up is a zero-sugar energy drink with 31g protein. Clean energy, great taste, built for performance.';
 
   const ORIGIN = 'https://shopfireup.com';
-
   const pathname = location?.pathname ?? '/';
   const canonical = `${ORIGIN}${pathname}`;
-
   const ogImage = `${ORIGIN}/og/home.png`;
 
   return [
@@ -20,19 +18,16 @@ export const meta: Route.MetaFunction = ({location}) => {
     {rel: 'canonical', href: canonical},
     {name: 'robots', content: 'index,follow'},
 
-    // Open Graph
     {property: 'og:type', content: 'website'},
     {property: 'og:site_name', content: 'Fire Up'},
     {property: 'og:title', content: title},
     {property: 'og:description', content: description},
     {property: 'og:url', content: canonical},
     {property: 'og:image', content: ogImage},
-    // optional but recommended
     {property: 'og:image:alt', content: 'Fire Up Energy Drink'},
     {property: 'og:image:width', content: '1200'},
     {property: 'og:image:height', content: '630'},
 
-    // Twitter
     {name: 'twitter:card', content: 'summary_large_image'},
     {name: 'twitter:title', content: title},
     {name: 'twitter:description', content: description},
@@ -41,16 +36,16 @@ export const meta: Route.MetaFunction = ({location}) => {
 };
 
 export async function loader({context}: Route.LoaderArgs) {
-  const data = await context.storefront.query(HOME_FEATURED_VARIANT_QUERY);
+  const data = await context.storefront.query(HOME_FEATURED_PRODUCT_QUERY);
 
-  const product = data?.products?.nodes?.[0];
-  const selectedVariant = product?.selectedOrFirstAvailableVariant ?? null;
+  const product = data?.products?.nodes?.[0] ?? null;
+  const variants = product?.variants?.nodes ?? [];
 
-  return {selectedVariant};
+  return {product, variants};
 }
 
 export default function Homepage() {
-  const {selectedVariant} = useLoaderData<typeof loader>();
+  const {product, variants} = useLoaderData<typeof loader>();
 
   const scrollToProduct = () => {
     const el = document.getElementById('product');
@@ -67,7 +62,8 @@ export default function Homepage() {
   return (
     <div className="home bg-black text-white min-h-screen">
       <HomePageSections
-        selectedVariant={selectedVariant}
+        product={product}
+        variants={variants}
         scrollToProduct={scrollToProduct}
         onDiscoverMore={handleDiscoverMore}
       />
@@ -75,8 +71,8 @@ export default function Homepage() {
   );
 }
 
-const HOME_FEATURED_VARIANT_QUERY = `#graphql
-  query HomeFeaturedVariant(
+const HOME_FEATURED_PRODUCT_QUERY = `#graphql
+  query HomeFeaturedProduct(
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
@@ -86,25 +82,28 @@ const HOME_FEATURED_VARIANT_QUERY = `#graphql
         title
         handle
         vendor
-        selectedOrFirstAvailableVariant(
-          selectedOptions: []
-          ignoreUnknownOptions: true
-          caseInsensitiveMatch: true
-        ) {
-          id
-          availableForSale
-          title
-          image {
-            url
-            altText
-          }
-          price {
-            amount
-            currencyCode
-          }
-          product {
+
+        variants(first: 10) {
+          nodes {
+            id
             title
-            handle
+            availableForSale
+            price {
+              amount
+              currencyCode
+            }
+            image {
+              url
+              altText
+            }
+            selectedOptions {
+              name
+              value
+            }
+            product {
+              title
+              handle
+            }
           }
         }
       }
