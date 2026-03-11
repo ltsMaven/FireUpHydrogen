@@ -109,6 +109,14 @@ export function ProductSection({variants}: ProductSectionProps) {
       ),
     ) ?? variants[0];
 
+  console.log('selectedPack', selectedPack);
+  console.log('desiredLabel', desiredLabel);
+  console.log('all variants', variants);
+  console.log('activeVariant', activeVariant);
+  console.log('activeVariant title', activeVariant?.title);
+  console.log('activeVariant price', activeVariant?.price);
+  console.log('activeVariant selectedOptions', activeVariant?.selectedOptions);
+
   const merchandiseId = activeVariant?.id;
   const canAdd =
     Boolean(merchandiseId) && (activeVariant?.availableForSale ?? true);
