@@ -377,6 +377,7 @@ export function ProductSection({variants}: ProductSectionProps) {
                           {
                             merchandiseId,
                             quantity: addQty,
+                            selectedVariant: activeVariant,
                             attributes: [
                               {
                                 key: 'packSize',
