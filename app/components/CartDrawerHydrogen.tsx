@@ -5,19 +5,28 @@ import {Button} from '~/ui/button';
 import {useAside} from '~/components/Aside';
 import {useParams} from 'react-router';
 
-type CartLineNode = NonNullable<CartApiQueryFragment>['lines']['nodes'][number];
-
-type ProductVariantMerchandise = Extract<
-  CartLineNode['merchandise'],
-  {__typename: 'ProductVariant'}
->;
+type ProductVariantMerchandise = {
+  __typename: 'ProductVariant';
+  id: string;
+  title?: string | null;
+  image?: {
+    url?: string | null;
+    altText?: string | null;
+  } | null;
+  product?: {
+    title?: string | null;
+    handle?: string | null;
+  } | null;
+};
 
 function isProductVariant(m: unknown): m is ProductVariantMerchandise {
   return (
-    !!m && typeof m === 'object' && (m as any).__typename === 'ProductVariant'
+    !!m &&
+    typeof m === 'object' &&
+    '__typename' in m &&
+    (m as {__typename?: string}).__typename === 'ProductVariant'
   );
 }
-
 export function CartDrawerHydrogen({
   cart,
 }: {
@@ -31,7 +40,6 @@ export function CartDrawerHydrogen({
   const cartRoute = locale ? `/${locale}/cart` : '/cart';
 
   const lines = optimisticCart?.lines?.nodes?.filter(Boolean) ?? [];
-  const itemCount = lines.reduce((sum, l: any) => sum + (l?.quantity ?? 0), 0);
 
   const subtotal = optimisticCart?.cost?.subtotalAmount ?? null;
   const total = optimisticCart?.cost?.totalAmount ?? null;
@@ -41,8 +49,6 @@ export function CartDrawerHydrogen({
 
   return (
     <div className="h-full flex flex-col bg-gray-900">
-      {/* ✅ No custom header here — Aside already provides the title + one close (X) */}
-
       <div className="flex-1 overflow-y-auto p-6">
         {lines.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
@@ -61,14 +67,18 @@ export function CartDrawerHydrogen({
         ) : (
           <div className="space-y-4">
             {lines.map((line: any) => {
-              const m = line.merchandise;
-              const variant = m?.__typename === 'ProductVariant' ? m : null;
+              const merchandise = line?.merchandise;
+              const variant = isProductVariant(merchandise)
+                ? merchandise
+                : null;
 
               const productTitle = variant?.product?.title ?? 'Product';
               const variantTitle = variant?.title ?? null;
               const imageUrl = variant?.image?.url ?? null;
               const imageAlt = variant?.image?.altText ?? productTitle;
-              const price = variant?.price ?? null;
+
+              const linePrice = line?.cost?.amountPerQuantity ?? null;
+              const lineTotal = line?.cost?.totalAmount ?? null;
 
               return (
                 <div
@@ -90,14 +100,23 @@ export function CartDrawerHydrogen({
                       <h3 className="text-white mb-1 truncate">
                         {productTitle}
                       </h3>
+
                       {variantTitle ? (
-                        <p className="text-xs text-gray-400 mb-2 truncate">
+                        <p className="text-xs text-gray-400 mb-1 truncate">
                           {variantTitle}
                         </p>
                       ) : null}
 
-                      <div className="text-orange-400 mb-2">
-                        {price ? <Money data={price} /> : null}
+                      <div className="text-orange-400 mb-1">
+                        {linePrice ? <Money data={linePrice} /> : null}
+                      </div>
+
+                      <div className="text-xs text-gray-400 mb-2">
+                        {lineTotal ? (
+                          <>
+                            Line total: <Money data={lineTotal} />
+                          </>
+                        ) : null}
                       </div>
 
                       <div className="flex items-center gap-2">
