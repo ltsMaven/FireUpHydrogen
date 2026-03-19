@@ -1,5 +1,14 @@
 import {motion} from 'framer-motion';
-import {Mail, Phone, Clock, Send, MessageSquare, ArrowUpRight} from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  Clock,
+  Send,
+  MessageSquare,
+  ArrowUpRight,
+  CheckCircle2,
+  Sparkles,
+} from 'lucide-react';
 import {Badge} from '~/ui/badge';
 import {buttonVariants} from '~/ui/button';
 import {useSearchParams} from 'react-router';
@@ -26,6 +35,17 @@ export function ContactPage() {
   const primaryCopy = preorderFlavor
     ? `Reserve ${preorderFlavor} directly through your email app. We already prepared the subject and message so the handoff is immediate.`
     : 'Skip the long form. Open your email app with a prepared Fire Up message and contact the team directly.';
+  const nextSteps = preorderFlavor
+    ? [
+        'Open the draft in your email app',
+        'Review the preorder message',
+        'Send it and wait for Fire Up follow-up',
+      ]
+    : [
+        'Open the draft in your email app',
+        'Add any extra context if needed',
+        'Send it directly to the Fire Up team',
+      ];
 
   const contactMethods = [
     {
@@ -79,14 +99,14 @@ export function ContactPage() {
 
   return (
     <div className="min-h-screen bg-black">
-      <section className="relative overflow-hidden pt-32 pb-10 md:pt-36 md:pb-14">
+      <section className="relative overflow-hidden pt-28 pb-8 md:pt-34 md:pb-12">
         <div className="absolute inset-0 bg-gradient-to-b from-red-900/20 via-black to-black" />
         <div className="absolute inset-0">
           <div className="absolute left-8 top-12 h-72 w-72 rounded-full bg-orange-500/10 blur-3xl" />
           <div className="absolute bottom-0 right-8 h-72 w-72 rounded-full bg-red-500/10 blur-3xl" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="relative z-10 container mx-auto px-4">
           <motion.div
             initial={{opacity: 0, y: 14}}
             animate={{opacity: 1, y: 0}}
@@ -97,9 +117,9 @@ export function ContactPage() {
             <Badge className="mb-5 border-orange-500/30 bg-orange-500/20 text-orange-400">
               {preorderFlavor ? 'Reserve A Flavor' : 'Get In Touch'}
             </Badge>
-            <h1 className="mb-5 text-4xl uppercase text-white md:text-6xl">
+            <h1 className="mb-5 text-4xl uppercase leading-[0.95] text-white md:text-6xl">
               {preorderFlavor ? 'Preorder' : 'Contact'}
-              <span className="ml-3 bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+              <span className="ml-3 inline-block bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
                 {preorderFlavor || 'Fire Up'}
               </span>
             </h1>
@@ -110,9 +130,9 @@ export function ContactPage() {
         </div>
       </section>
 
-      <section className="relative pb-16 pt-6 md:pb-20">
+      <section className="relative pb-16 pt-4 md:pb-20 md:pt-6">
         <div className="container mx-auto px-4">
-          <div className="mx-auto mb-12 grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="mx-auto mb-10 grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-3">
             {contactMethods.map((method, index) => {
               const Icon = method.icon;
 
@@ -132,7 +152,7 @@ export function ContactPage() {
                 >
                   <a
                     href={method.href}
-                    className="group block h-full rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30 hover:bg-white/[0.06]"
+                    className="group flex h-full min-h-[210px] flex-col rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30 hover:bg-white/[0.06] hover:shadow-[0_20px_50px_rgba(249,115,22,0.08)]"
                   >
                     <div
                       className={`mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${method.color}`}
@@ -144,7 +164,7 @@ export function ContactPage() {
                         <h3 className="mb-2 text-lg text-white">{method.title}</h3>
                         <p className="mb-2 break-words text-orange-400">{method.detail}</p>
                       </div>
-                      <ArrowUpRight className="mt-1 h-4 w-4 text-white/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-orange-300" />
+                      <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-white/50 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-orange-300" />
                     </div>
                     <p className="text-sm leading-6 text-gray-400">
                       {method.description}
@@ -163,10 +183,10 @@ export function ContactPage() {
               transition={{duration: 0.4, ease: 'easeOut'}}
               style={{willChange: 'transform, opacity'}}
             >
-              <div className="grid overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] shadow-[0_30px_90px_rgba(0,0,0,0.35)] md:grid-cols-[1.05fr_0.95fr]">
-                <div className="border-b border-white/10 p-7 md:border-b-0 md:border-r md:p-9">
+              <div className="grid overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] shadow-[0_30px_90px_rgba(0,0,0,0.35)] lg:grid-cols-[0.92fr_1.08fr]">
+                <div className="border-b border-white/10 p-6 md:p-8 lg:border-b-0 lg:border-r lg:p-9">
                   <div className="mb-6 flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-600">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 shadow-[0_12px_30px_rgba(249,115,22,0.35)]">
                       <MessageSquare className="h-6 w-6 text-white" />
                     </div>
                     <div>
@@ -180,6 +200,24 @@ export function ContactPage() {
                   </div>
 
                   <div className="space-y-6">
+                    <div className="rounded-3xl border border-orange-500/20 bg-[linear-gradient(135deg,rgba(249,115,22,0.12),rgba(239,68,68,0.05))] p-5">
+                      <div className="flex items-start gap-3">
+                        <div className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-2xl border border-white/10 bg-black/20">
+                          <Sparkles className="h-5 w-5 text-orange-300" />
+                        </div>
+                        <div>
+                          <p className="mb-1 text-xs uppercase tracking-[0.24em] text-orange-300/80">
+                            Fastest route
+                          </p>
+                          <p className="text-base leading-7 text-white">
+                            {preorderFlavor
+                              ? `This opens a ready-to-send preorder email for ${preorderFlavor}, so customers can reach you without filling a form.`
+                              : 'This opens a ready-to-send email draft immediately, so visitors can contact you without any on-page friction.'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     <p className="text-base leading-7 text-gray-300">
                       {preorderFlavor
                         ? `Your message draft is already set up for ${preorderFlavor}. Open your mail app, review it, and send when ready.`
@@ -203,12 +241,29 @@ export function ContactPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-3 2xl:grid-cols-2">
+                    <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+                      <p className="mb-4 text-xs uppercase tracking-[0.28em] text-orange-300/80">
+                        What happens next
+                      </p>
+                      <div className="space-y-3">
+                        {nextSteps.map((step) => (
+                          <div
+                            key={step}
+                            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3"
+                          >
+                            <CheckCircle2 className="h-4 w-4 shrink-0 text-orange-300" />
+                            <span className="text-sm text-gray-300">{step}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                       <a
                         href={emailHref}
                         className={cn(
                           buttonVariants({size: 'lg'}),
-                          'w-full rounded-2xl bg-gradient-to-r from-orange-500 to-red-600 text-base font-semibold hover:from-orange-600 hover:to-red-700',
+                          'w-full rounded-2xl bg-gradient-to-r from-orange-500 to-red-600 text-base font-semibold shadow-[0_18px_40px_rgba(239,68,68,0.18)] hover:from-orange-600 hover:to-red-700',
                         )}
                       >
                         <Send className="h-5 w-5" />
@@ -236,8 +291,8 @@ export function ContactPage() {
                   </div>
                 </div>
 
-                <div className="bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.12),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-7 md:p-9">
-                  <div className="mb-5 flex items-center justify-between">
+                <div className="bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.12),transparent_42%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-6 md:p-8 lg:p-9">
+                  <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-xs uppercase tracking-[0.28em] text-orange-300/80">
                         Message preview
@@ -251,18 +306,31 @@ export function ContactPage() {
                     </div>
                   </div>
 
-                  <div className="rounded-[24px] border border-white/10 bg-black/35 p-5 shadow-inner">
-                    <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
-                      Email subject
-                    </p>
-                    <p className="mb-5 text-lg text-white">{presetSubject}</p>
+                  <div className="overflow-hidden rounded-[24px] border border-white/10 bg-black/35 shadow-inner">
+                    <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-5 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-amber-300/80" />
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+                      </div>
+                      <span className="text-[11px] uppercase tracking-[0.22em] text-gray-400">
+                        Fire Up Mail Draft
+                      </span>
+                    </div>
 
-                    <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
-                      Draft preview
-                    </p>
-                    <pre className="min-h-[220px] whitespace-pre-wrap font-sans text-sm leading-7 text-gray-300">
-                      {presetMessage}
-                    </pre>
+                    <div className="p-5 md:p-6">
+                      <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
+                        Email subject
+                      </p>
+                      <p className="mb-5 text-lg text-white">{presetSubject}</p>
+
+                      <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
+                        Draft preview
+                      </p>
+                      <pre className="min-h-[220px] whitespace-pre-wrap font-sans text-sm leading-7 text-gray-300">
+                        {presetMessage}
+                      </pre>
+                    </div>
                   </div>
                 </div>
               </div>
