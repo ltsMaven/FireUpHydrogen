@@ -4,6 +4,7 @@ import {BenefitsSection} from '~/components/BenefitsSection';
 import {ProductSection} from '~/components/ProductSection';
 import {NutritionSection} from '~/components/NutritionSection';
 import {TestimonialsSection} from '~/components/TestimonialSection';
+import {UpcomingFlavorsSection} from '~/components/UpcomingFlavorsSection';
 
 export type Variant = {
   id: string;
@@ -47,6 +48,7 @@ export function HomePageSections({
         </div>
       )}
 
+      <UpcomingFlavorsSection />
       <TestimonialsSection />
     </main>
   );

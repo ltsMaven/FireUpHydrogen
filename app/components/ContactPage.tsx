@@ -5,16 +5,32 @@ import {Button} from '~/ui/button';
 import {Input} from '~/ui/input';
 import {Textarea} from '~/ui/textarea';
 import {Label} from '~/ui/label';
-import {useState, type FormEvent} from 'react';
+import {useEffect, useState, type FormEvent} from 'react';
 import {toast} from 'sonner';
+import {useSearchParams} from 'react-router';
 
 export function ContactPage() {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: '',
   });
+
+  const preorderFlavor = searchParams.get('flavor');
+  const presetSubject = searchParams.get('subject');
+  const presetMessage = searchParams.get('message');
+
+  useEffect(() => {
+    if (!presetSubject && !presetMessage) return;
+
+    setFormData((current) => ({
+      ...current,
+      subject: current.subject || presetSubject || '',
+      message: current.message || presetMessage || '',
+    }));
+  }, [presetMessage, presetSubject]);
 
   const nameRegex = /^[A-Za-z\s]+$/;
 
@@ -106,17 +122,18 @@ export function ContactPage() {
             style={{willChange: 'transform, opacity'}}
           >
             <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 mb-6">
-              Get In Touch
+              {preorderFlavor ? 'Reserve A Flavor' : 'Get In Touch'}
             </Badge>
             <h1 className="text-5xl md:text-7xl uppercase mb-6 text-white">
-              Let&apos;s{' '}
+              {preorderFlavor ? 'Preorder ' : "Let's "}
               <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-                Connect
+                {preorderFlavor || 'Connect'}
               </span>
             </h1>
             <p className="text-xl text-gray-300 mb-8">
-              Have questions? Want to partner with us? We&apos;re here to help.
-              Reach out and let&apos;s ignite something amazing together.
+              {preorderFlavor
+                ? `Tell us you want ${preorderFlavor} and we will follow up with launch timing, pack options, and preorder details.`
+                : `Have questions? Want to partner with us? We're here to help. Reach out and let's ignite something amazing together.`}
             </p>
           </motion.div>
         </div>
