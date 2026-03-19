@@ -118,7 +118,7 @@ export function ContactPage() {
 
               return (
                 <motion.div
-                  key={index}
+                  key={method.title}
                   initial={{opacity: 0, y: 12}}
                   whileInView={{opacity: 1, y: 0}}
                   viewport={{once: true, amount: 0.25}}
@@ -252,18 +252,17 @@ export function ContactPage() {
                   </div>
 
                   <div className="rounded-[24px] border border-white/10 bg-black/35 p-5 shadow-inner">
-                      <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
-                        Email subject
-                      </p>
-                      <p className="mb-5 text-lg text-white">{presetSubject}</p>
+                    <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
+                      Email subject
+                    </p>
+                    <p className="mb-5 text-lg text-white">{presetSubject}</p>
 
-                      <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
-                        Draft preview
-                      </p>
-                      <pre className="min-h-[220px] whitespace-pre-wrap font-sans text-sm leading-7 text-gray-300">
-                        {presetMessage}
-                      </pre>
-                    </div>
+                    <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
+                      Draft preview
+                    </p>
+                    <pre className="min-h-[220px] whitespace-pre-wrap font-sans text-sm leading-7 text-gray-300">
+                      {presetMessage}
+                    </pre>
                   </div>
                 </div>
               </div>
@@ -297,7 +296,7 @@ export function ContactPage() {
           <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
             {faqs.map((faq, index) => (
               <motion.div
-                key={index}
+                key={faq.question}
                 initial={{opacity: 0, y: 12}}
                 whileInView={{opacity: 1, y: 0}}
                 viewport={{once: true, amount: 0.2}}
