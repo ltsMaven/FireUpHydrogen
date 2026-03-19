@@ -3,15 +3,16 @@ import {Link, useParams} from 'react-router';
 import {Badge} from '~/ui/badge';
 import {buttonVariants} from '~/ui/button';
 import {Card} from '~/ui/card';
-import {Sparkles, Clock3, Flame, Droplets} from 'lucide-react';
+import {Sparkles, Clock3, Flame, Droplets, ArrowUpRight} from 'lucide-react';
 import {cn} from '~/ui/utils';
 
 type Flavor = {
   name: string;
   accent: string;
   note: string;
-  releaseWindow: string;
   badge: string;
+  code: string;
+  mix: string;
 };
 
 const sectionV: Variants = {
@@ -30,39 +31,44 @@ const cardV: Variants = {
 
 const flavors: Flavor[] = [
   {
-    name: 'Mango Inferno',
-    accent: 'from-orange-400 via-amber-300 to-red-500',
-    note: 'Tropical mango with a warm citrus finish.',
-    releaseWindow: 'Ships in June',
+    name: 'Pineapple',
+    accent: 'from-yellow-200 via-yellow-300 to-amber-500',
+    note: 'Bright pineapple sweetness with a sharp tropical finish.',
     badge: 'Fan Favorite',
+    code: 'PX-01',
+    mix: 'Tropical citrus',
   },
   {
-    name: 'Cherry Voltage',
-    accent: 'from-rose-400 via-red-400 to-red-700',
-    note: 'Bold cherry bite with a clean, sharp lift.',
-    releaseWindow: 'Ships in June',
+    name: 'Watermelon Lemonade',
+    accent: 'from-pink-300 via-rose-400 to-green-400',
+    note: 'Juicy watermelon body cut with a clean lemonade edge.',
     badge: 'Early Drop',
+    code: 'WL-02',
+    mix: 'Sweet and sharp',
   },
   {
-    name: 'Blue Riptide',
-    accent: 'from-sky-400 via-cyan-300 to-blue-600',
-    note: 'Electric berry flavor with a crisp finish.',
-    releaseWindow: 'Ships in July',
+    name: 'Mango Lemonade',
+    accent: 'from-yellow-300 via-orange-400 to-amber-500',
+    note: 'Ripe mango layered with a bright citrus snap.',
     badge: 'Limited Run',
+    code: 'ML-03',
+    mix: 'Sunset citrus',
   },
   {
-    name: 'Lime Surge',
-    accent: 'from-lime-300 via-emerald-300 to-green-500',
-    note: 'Bright lime snap built for summer sessions.',
-    releaseWindow: 'Ships in July',
+    name: 'Lemon Lime',
+    accent: 'from-lime-200 via-yellow-200 to-lime-500',
+    note: 'Classic lemon-lime refresh built for a clean lift.',
     badge: 'Fresh Pick',
+    code: 'LL-04',
+    mix: 'Clean refresh',
   },
   {
-    name: 'Peach Blaze',
-    accent: 'from-orange-200 via-pink-300 to-orange-500',
-    note: 'Soft peach upfront with a fiery finish.',
-    releaseWindow: 'Ships in August',
+    name: 'Orange',
+    accent: 'from-orange-200 via-orange-400 to-orange-600',
+    note: 'Straight citrus energy with a bold orange finish.',
     badge: 'New Blend',
+    code: 'OR-05',
+    mix: 'Pure citrus',
   },
 ];
 
@@ -116,41 +122,64 @@ export function UpcomingFlavorsSection() {
                 viewport={{once: true, amount: 0.2}}
                 style={{willChange: 'transform, opacity'}}
               >
-                <Card className="group relative flex h-full flex-col overflow-hidden border border-white/10 bg-white/[0.03] p-0 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30">
-                  <div className={`h-40 bg-gradient-to-br ${flavor.accent}`}>
-                    <div className="flex h-full flex-col justify-between p-5">
-                      <div className="flex items-center justify-between">
-                        <Badge className="border-white/30 bg-black/20 text-white">
+                <Card className="group relative flex h-full flex-col overflow-hidden border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-0 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-orange-500/30 hover:shadow-[0_24px_80px_rgba(249,115,22,0.16)]">
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.09),transparent_24%)] opacity-70" />
+
+                  <div
+                    className={`relative h-48 overflow-hidden bg-gradient-to-br ${flavor.accent}`}
+                  >
+                    <div className="absolute inset-0 bg-[linear-gradient(140deg,rgba(255,255,255,0.34),transparent_38%,rgba(0,0,0,0.16))]" />
+                    <div className="absolute -right-10 -top-12 h-32 w-32 rounded-full bg-white/30 blur-2xl transition-transform duration-500 group-hover:scale-110" />
+                    <div className="absolute bottom-3 left-5 right-5 h-px bg-black/15" />
+
+                    <div className="relative flex h-full flex-col justify-between p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <Badge className="border-white/30 bg-black/20 text-white backdrop-blur-sm">
                           {flavor.badge}
                         </Badge>
-                        <Flame className="h-5 w-5 text-white/90" />
+                        <div className="flex items-center gap-2 rounded-full border border-black/10 bg-black/10 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-black/70 backdrop-blur-sm">
+                          <Flame className="h-3.5 w-3.5" />
+                          <span>{flavor.code}</span>
+                        </div>
                       </div>
+
                       <div>
-                        <p className="mb-1 text-xs uppercase tracking-[0.22em] text-black/70">
+                        <p className="mb-2 text-[11px] uppercase tracking-[0.28em] text-black/65">
                           Limited preorder
                         </p>
-                        <h3 className="text-2xl uppercase text-black/85">
+                        <h3 className="max-w-[11ch] text-3xl uppercase leading-[0.95] text-black/85">
                           {flavor.name}
                         </h3>
+                        <div className="mt-4 flex items-center justify-between text-[11px] uppercase tracking-[0.22em] text-black/60">
+                          <span>{flavor.mix}</span>
+                          <span>Series 01</span>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-1 flex-col p-5">
-                    <p className="mb-4 min-h-12 text-sm leading-6 text-gray-300">
+                  <div className="relative flex flex-1 flex-col p-5">
+                    <div className="mb-4 flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full bg-orange-400 shadow-[0_0_14px_rgba(249,115,22,0.9)]" />
+                      <span className="text-[11px] uppercase tracking-[0.26em] text-orange-300/90">
+                        Launch reservation
+                      </span>
+                    </div>
+
+                    <p className="mb-5 min-h-16 text-sm leading-6 text-gray-300">
                       {flavor.note}
                     </p>
 
-                    <div className="mb-5 space-y-2 text-sm text-gray-400">
-                      <div className="flex items-center gap-2">
+                    <div className="mb-6 space-y-3 text-sm text-gray-400">
+                      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">
                         <Clock3 className="h-4 w-4 text-orange-400" />
-                        <span>{flavor.releaseWindow}</span>
+                        <span>Limited time only</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">
                         <Droplets className="h-4 w-4 text-orange-400" />
                         <span>Zero sugar, 31g protein</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-2">
                         <Sparkles className="h-4 w-4 text-orange-400" />
                         <span>Reserve before public launch</span>
                       </div>
@@ -165,6 +194,7 @@ export function UpcomingFlavorsSection() {
                         )}
                       >
                         Preorder This Flavor
+                        <ArrowUpRight className="h-4 w-4" />
                       </Link>
                     </div>
                   </div>
