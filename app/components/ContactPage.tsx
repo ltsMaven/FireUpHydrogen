@@ -1,60 +1,25 @@
 import {motion} from 'framer-motion';
-import {Mail, Phone, Clock, Send, MessageSquare} from 'lucide-react';
+import {Mail, Phone, Clock, Send, MessageSquare, ArrowUpRight} from 'lucide-react';
 import {Badge} from '~/ui/badge';
-import {Button} from '~/ui/button';
-import {Input} from '~/ui/input';
-import {Textarea} from '~/ui/textarea';
-import {Label} from '~/ui/label';
-import {useEffect, useState, type FormEvent} from 'react';
-import {toast} from 'sonner';
+import {buttonVariants} from '~/ui/button';
 import {useSearchParams} from 'react-router';
+import {cn} from '~/ui/utils';
 
 export function ContactPage() {
   const [searchParams] = useSearchParams();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
-  });
 
   const preorderFlavor = searchParams.get('flavor');
-  const presetSubject = searchParams.get('subject');
-  const presetMessage = searchParams.get('message');
-
-  useEffect(() => {
-    if (!presetSubject && !presetMessage) return;
-
-    setFormData((current) => ({
-      ...current,
-      subject: current.subject || presetSubject || '',
-      message: current.message || presetMessage || '',
-    }));
-  }, [presetMessage, presetSubject]);
-
-  const nameRegex = /^[A-Za-z\s]+$/;
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (
-      !formData.name.trim() ||
-      !formData.email.trim() ||
-      !formData.subject.trim() ||
-      !formData.message.trim()
-    ) {
-      toast.error('Please fill in all fields before submitting.');
-      return;
-    }
-
-    if (!nameRegex.test(formData.name.trim())) {
-      toast.error('Name can only contain letters and spaces.');
-      return;
-    }
-
-    toast.success("Message sent! We'll get back to you within 24 hours.");
-    setFormData({name: '', email: '', subject: '', message: ''});
-  };
+  const presetSubject =
+    searchParams.get('subject') ||
+    (preorderFlavor ? `Preorder request - ${preorderFlavor}` : 'Fire Up inquiry');
+  const presetMessage =
+    searchParams.get('message') ||
+    (preorderFlavor
+      ? `Hi Fire Up team,\n\nI want to preorder ${preorderFlavor}. Please contact me with launch timing, pack options, and payment details.\n\nThanks.`
+      : `Hi Fire Up team,\n\nI would like to get in touch regarding Fire Up.\n\nThanks.`);
+  const emailHref = `mailto:fireupenergydrink@gmail.com?subject=${encodeURIComponent(
+    presetSubject,
+  )}&body=${encodeURIComponent(presetMessage)}`;
 
   const contactMethods = [
     {
@@ -63,6 +28,7 @@ export function ContactPage() {
       detail: 'fireupenergydrink@gmail.com',
       description: 'Send us an email anytime',
       color: 'from-blue-500 to-cyan-600',
+      href: emailHref,
     },
     {
       icon: Phone,
@@ -70,6 +36,7 @@ export function ContactPage() {
       detail: '+1 (555) 123-4567',
       description: 'Mon-Fri from 8am to 6pm',
       color: 'from-green-500 to-emerald-600',
+      href: 'tel:+15551234567',
     },
     {
       icon: Clock,
@@ -77,6 +44,7 @@ export function ContactPage() {
       detail: '24 Hours',
       description: 'Average response time',
       color: 'from-purple-500 to-pink-600',
+      href: emailHref,
     },
   ];
 
@@ -161,7 +129,10 @@ export function ContactPage() {
                   className="h-full"
                   style={{willChange: 'transform, opacity'}}
                 >
-                  <div className="h-full rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 text-center transition-all duration-300 hover:border-orange-500/30">
+                  <a
+                    href={method.href}
+                    className="block h-full rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-6 text-center transition-all duration-300 hover:border-orange-500/30"
+                  >
                     <div
                       className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${method.color}`}
                     >
@@ -172,14 +143,12 @@ export function ContactPage() {
                     <p className="text-sm text-gray-400">
                       {method.description}
                     </p>
-                  </div>
+                  </a>
                 </motion.div>
               );
             })}
           </div>
 
-          {/* FORM: Industrie-style centered block */}
-          {/* FORM: centered + full-width content */}
           <div className="contact-form mx-auto w-full max-w-3xl">
             <motion.div
               initial={{opacity: 0, y: 14}}
@@ -194,95 +163,64 @@ export function ContactPage() {
                   <div className="flex items-center gap-3">
                     <MessageSquare className="h-6 w-6 text-orange-400" />
                     <h2 className="text-2xl font-semibold text-white">
-                      Contact us
+                      {preorderFlavor ? 'Reserve by email' : 'Contact by email'}
                     </h2>
                   </div>
                 </div>
 
                 <div className="w-full px-8 py-8">
-                  <form
-                    onSubmit={handleSubmit}
-                    className="block w-full max-w-none space-y-6"
-                  >
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="block text-white">
-                        Full name <span className="text-red-400">*</span>
-                      </Label>
-                      <Input
-                        id="name"
-                        type="text"
-                        placeholder="Your name"
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({...formData, name: e.target.value})
-                        }
-                        required
-                        pattern="^[A-Za-z\\s]+$"
-                        title="Name can only contain letters and spaces."
-                        className="w-full bg-white/5 border-white/15 text-white placeholder:text-gray-500 focus:border-orange-500"
-                      />
+                  <div className="space-y-6">
+                    <p className="text-base leading-7 text-gray-300">
+                      {preorderFlavor
+                        ? `We removed the form step. Press the button below and your email app will open with a preorder message for ${preorderFlavor} already prepared.`
+                        : 'We removed the on-page form. Press the button below and your email app will open with a prepared message to the Fire Up team.'}
+                    </p>
+
+                    <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
+                      <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
+                        Email subject
+                      </p>
+                      <p className="mb-4 text-white">{presetSubject}</p>
+
+                      <p className="mb-2 text-xs uppercase tracking-[0.24em] text-orange-300/80">
+                        Draft preview
+                      </p>
+                      <pre className="whitespace-pre-wrap font-sans text-sm leading-6 text-gray-300">
+                        {presetMessage}
+                      </pre>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email" className="block text-white">
-                        Email <span className="text-red-400">*</span>
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="your@email.com"
-                        value={formData.email}
-                        onChange={(e) =>
-                          setFormData({...formData, email: e.target.value})
-                        }
-                        required
-                        className="w-full bg-white/5 border-white/15 text-white placeholder:text-gray-500 focus:border-orange-500"
-                      />
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                      <a
+                        href={emailHref}
+                        className={cn(
+                          buttonVariants({size: 'lg'}),
+                          'w-full rounded-2xl bg-gradient-to-r from-orange-500 to-red-600 text-base font-semibold hover:from-orange-600 hover:to-red-700',
+                        )}
+                      >
+                        <Send className="h-5 w-5" />
+                        Open Email App
+                      </a>
+                      <a
+                        href="mailto:fireupenergydrink@gmail.com"
+                        className={cn(
+                          buttonVariants({size: 'lg', variant: 'outline'}),
+                          'w-full rounded-2xl border-white/15 bg-white/5 text-white hover:bg-white/10',
+                        )}
+                      >
+                        <Mail className="h-5 w-5" />
+                        Email Fire Up
+                      </a>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="subject" className="block text-white">
-                        Subject <span className="text-red-400">*</span>
-                      </Label>
-                      <Input
-                        id="subject"
-                        type="text"
-                        placeholder="Select a subject"
-                        value={formData.subject}
-                        onChange={(e) =>
-                          setFormData({...formData, subject: e.target.value})
-                        }
-                        required
-                        className="w-full bg-white/5 border-white/15 text-white placeholder:text-gray-500 focus:border-orange-500"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message" className="block text-white">
-                        Message <span className="text-red-400">*</span>
-                      </Label>
-                      <Textarea
-                        id="message"
-                        placeholder="Tell us more..."
-                        rows={8}
-                        value={formData.message}
-                        onChange={(e) =>
-                          setFormData({...formData, message: e.target.value})
-                        }
-                        required
-                        className="w-full min-h-[220px] bg-white/5 border-white/15 text-white placeholder:text-gray-500 focus:border-orange-500 resize-none"
-                      />
-                    </div>
-
-                    <Button
-                      type="submit"
-                      size="lg"
-                      className="w-full bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700"
+                    <a
+                      href="mailto:fireupenergydrink@gmail.com"
+                      className="inline-flex items-center gap-2 text-sm text-orange-300 hover:text-orange-200"
                     >
-                      <Send className="mr-2 h-5 w-5" />
-                      Send
-                    </Button>
-                  </form>
+                      fireupenergydrink@gmail.com
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  </div>
                 </div>
               </div>
             </motion.div>

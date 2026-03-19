@@ -1,5 +1,4 @@
 import {motion, type Variants} from 'framer-motion';
-import {Link, useParams} from 'react-router';
 import {Badge} from '~/ui/badge';
 import {buttonVariants} from '~/ui/button';
 import {Card} from '~/ui/card';
@@ -73,10 +72,6 @@ const flavors: Flavor[] = [
 ];
 
 export function UpcomingFlavorsSection() {
-  const params = useParams();
-  const locale = (params as {locale?: string}).locale;
-  const prefix = locale ? `/${locale}` : '';
-
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-black via-[#120604] to-black py-24">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(239,68,68,0.14),transparent_32%)]" />
@@ -104,13 +99,11 @@ export function UpcomingFlavorsSection() {
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
           {flavors.map((flavor, index) => {
-            const preorderHref =
-              `${prefix}/contact?intent=preorder` +
-              `&flavor=${encodeURIComponent(flavor.name)}` +
-              `&subject=${encodeURIComponent(`Preorder request - ${flavor.name}`)}` +
-              `&message=${encodeURIComponent(
-                `Hi Fire Up team,\n\nI want to preorder ${flavor.name}. Please contact me with launch timing, pack options, and payment details.\n\nThanks.`,
-              )}`;
+            const preorderHref = `mailto:fireupenergydrink@gmail.com?subject=${encodeURIComponent(
+              `Preorder request - ${flavor.name}`,
+            )}&body=${encodeURIComponent(
+              `Hi Fire Up team,\n\nI want to preorder ${flavor.name}. Please contact me with launch timing, pack options, and payment details.\n\nThanks.`,
+            )}`;
 
             return (
               <motion.div
@@ -186,8 +179,8 @@ export function UpcomingFlavorsSection() {
                     </div>
 
                     <div className="mt-auto">
-                      <Link
-                        to={preorderHref}
+                      <a
+                        href={preorderHref}
                         className={cn(
                           buttonVariants({size: 'lg'}),
                           'w-full rounded-2xl bg-gradient-to-r from-orange-500 to-red-600 text-base font-semibold hover:from-orange-600 hover:to-red-700',
@@ -195,7 +188,7 @@ export function UpcomingFlavorsSection() {
                       >
                         Preorder This Flavor
                         <ArrowUpRight className="h-4 w-4" />
-                      </Link>
+                      </a>
                     </div>
                   </div>
                 </Card>
