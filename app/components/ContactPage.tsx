@@ -203,7 +203,7 @@ export function ContactPage() {
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-3 sm:flex-row">
+                    <div className="grid grid-cols-1 gap-3 2xl:grid-cols-2">
                       <a
                         href={emailHref}
                         className={cn(
@@ -228,7 +228,7 @@ export function ContactPage() {
 
                     <a
                       href="mailto:fireupenergydrink@gmail.com"
-                      className="inline-flex items-center gap-2 text-sm text-orange-300 hover:text-orange-200"
+                      className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-orange-300 transition-colors hover:border-orange-500/30 hover:text-orange-200"
                     >
                       fireupenergydrink@gmail.com
                       <ArrowUpRight className="h-4 w-4" />
