@@ -14,11 +14,26 @@ export default async function handleRequest(
   reactRouterContext: EntryContext,
   context: HydrogenRouterContextProvider,
 ) {
+  const checkoutDomain = context.env.PUBLIC_CHECKOUT_DOMAIN.replace(
+    /^https?:\/\//,
+    '',
+  );
+  const storeDomain = context.env.PUBLIC_STORE_DOMAIN.replace(
+    /^https?:\/\//,
+    '',
+  );
+
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
-      checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
-      storeDomain: context.env.PUBLIC_STORE_DOMAIN,
+      checkoutDomain,
+      storeDomain,
     },
+    imgSrc: [
+      "'self'",
+      'data:',
+      'blob:',
+      'https://cdn.shopify.com',
+    ],
   });
 
   const body = await renderToReadableStream(

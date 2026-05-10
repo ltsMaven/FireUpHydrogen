@@ -6,10 +6,19 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
+  assetsInclude: ['**/*.glb'],
   plugins: [
     tailwindcss(),
     hydrogen(),
-    oxygen(),
+    oxygen({
+      env: {
+        SESSION_SECRET: process.env.SESSION_SECRET,
+        PUBLIC_STORE_DOMAIN: process.env.PUBLIC_STORE_DOMAIN,
+        PUBLIC_CHECKOUT_DOMAIN: process.env.PUBLIC_CHECKOUT_DOMAIN,
+        PUBLIC_STOREFRONT_API_TOKEN: process.env.PUBLIC_STOREFRONT_API_TOKEN,
+        PRIVATE_STOREFRONT_API_TOKEN: process.env.PRIVATE_STOREFRONT_API_TOKEN,
+      },
+    }),
     reactRouter(),
     tsconfigPaths(),
   ],
@@ -35,5 +44,9 @@ export default defineConfig({
   },
   server: {
     allowedHosts: ['.tryhydrogen.dev'],
+    watch: {
+      ignored: ['**/node_modules/**', '**/dist/**', '**/.react-router/**'],
+      usePolling: true,
+    },
   },
 });

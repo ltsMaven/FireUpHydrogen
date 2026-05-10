@@ -6,7 +6,7 @@ import {useState, Suspense} from 'react';
 import fireUpLogo from '../assets/fireup-logo.png';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
-import {Await, NavLink, useLocation} from 'react-router';
+import {Await, NavLink} from 'react-router';
 
 interface HeaderProps {
   header?: unknown;
@@ -18,7 +18,6 @@ interface HeaderProps {
 export function Header({cart}: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const {open} = useAside();
-  const location = useLocation();
 
   const closeMobile = () => setMobileMenuOpen(false);
 
@@ -61,15 +60,6 @@ export function Header({cart}: HeaderProps) {
             >
               Home
             </NavLink>
-
-            {/* If you want Product to scroll on home page */}
-            <a
-              href="/#product"
-              onClick={closeMobile}
-              className={`${baseLink} ${location.pathname === '/' ? idleLink : idleLink}`}
-            >
-              Product
-            </a>
 
             <NavLink
               to="/about"
@@ -147,9 +137,6 @@ export function Header({cart}: HeaderProps) {
             >
               Home
             </NavLink>
-            <a href="/#product" onClick={closeMobile} className={`${baseLink} ${idleLink}`}>
-              Product
-            </a>
             <NavLink
               to="/about"
               onClick={closeMobile}

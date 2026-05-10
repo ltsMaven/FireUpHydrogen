@@ -20,7 +20,7 @@ import {CartDrawerHydrogen} from '~/components/CartDrawerHydrogen';
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
   footer: Promise<FooterQuery | null>;
-  header: HeaderQuery;
+  header: HeaderQuery | null;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
   children?: React.ReactNode;
@@ -38,14 +38,12 @@ export function PageLayout({
     <Aside.Provider>
       <CartAside cart={cart} />
       <SearchAside />
-      {header && (
-        <Header
-          header={header}
-          cart={cart}
-          isLoggedIn={isLoggedIn}
-          publicStoreDomain={publicStoreDomain}
-        />
-      )}
+      <Header
+        header={header}
+        cart={cart}
+        isLoggedIn={isLoggedIn}
+        publicStoreDomain={publicStoreDomain}
+      />
       <main>{children}</main>
       <Footer
         footer={footer}
@@ -149,5 +147,3 @@ function SearchAside() {
     </Aside>
   );
 }
-
-

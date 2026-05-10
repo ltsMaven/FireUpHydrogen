@@ -1,24 +1,27 @@
-import {redirect, useLoaderData} from 'react-router';
+import {useLoaderData} from 'react-router';
 import type {Route} from './+types/($locale).products.$handle';
 import {
   getSelectedProductOptions,
   Analytics,
   useOptimisticVariant,
-  getProductOptions,
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImage} from '~/components/ProductImage';
-import {ProductForm} from '~/components/ProductForm';
+import {
+  ProductSection,
+  type ProductSectionVariant,
+} from '~/components/ProductSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
+  const title = data?.product?.title ?? 'Fire Up Energy Drink';
+  const handle = data?.product?.handle ?? 'fire-up-energy-drink';
+
   return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
+    {title: `Fire Up | ${title}`},
     {
       rel: 'canonical',
-      href: `/products/${data?.product.handle}`,
+      href: `/products/${handle}`,
     },
   ];
 };
@@ -45,15 +48,21 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
-    storefront.query(PRODUCT_QUERY, {
+  let product;
+
+  try {
+    const result = await storefront.query(PRODUCT_QUERY, {
       variables: {handle, selectedOptions: getSelectedProductOptions(request)},
-    }),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+    });
+
+    product = result.product;
+  } catch (error) {
+    console.error(error);
+    product = null;
+  }
 
   if (!product?.id) {
-    throw new Response(null, {status: 404});
+    return {product: null};
   }
 
   // The API handle might be localized, so redirect to the localized handle
@@ -79,6 +88,19 @@ function loadDeferredData({context, params}: Route.LoaderArgs) {
 export default function Product() {
   const {product} = useLoaderData<typeof loader>();
 
+  if (!product) {
+    return <ProductSection variants={[]} />;
+  }
+
+  return <LoadedProduct product={product} />;
+}
+
+function LoadedProduct({
+  product,
+}: {
+  product: NonNullable<Awaited<ReturnType<typeof loadCriticalData>>['product']>;
+}) {
+
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
@@ -89,37 +111,23 @@ export default function Product() {
   // only when no search params are set in the url
   useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
 
-  // Get the product options array
-  const productOptions = getProductOptions({
-    ...product,
-    selectedOrFirstAvailableVariant: selectedVariant,
-  });
+  const variants = [
+    selectedVariant,
+    ...product.adjacentVariants,
+    ...product.options.flatMap((option) =>
+      option.optionValues.map((value) => value.firstSelectableVariant),
+    ),
+  ].filter(Boolean);
 
-  const {title, descriptionHtml} = product;
+  const uniqueVariants = Array.from(
+    new Map(
+      variants.map((variant) => [variant.id, variant]),
+    ).values(),
+  ) as ProductSectionVariant[];
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
-      </div>
+    <div className="bg-black text-white">
+      <ProductSection variants={uniqueVariants} />
       <Analytics.ProductView
         data={{
           products: [

@@ -69,17 +69,29 @@ export async function loader(args: Route.LoaderArgs) {
   const criticalData = await loadCriticalData(args);
 
   const {storefront, env} = args.context;
+  const checkoutDomain = env.PUBLIC_CHECKOUT_DOMAIN.replace(/^https?:\/\//, '');
+  const publicStoreDomain = env.PUBLIC_STORE_DOMAIN.replace(/^https?:\/\//, '');
+  let shop = null;
+
+  try {
+    shop = await getShopAnalytics({
+      storefront,
+      publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
+    }).catch((error: Error) => {
+      console.error(error);
+      return null;
+    });
+  } catch (error) {
+    console.error(error);
+  }
 
   return {
     ...deferredData,
     ...criticalData,
-    publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
-    shop: getShopAnalytics({
-      storefront,
-      publicStorefrontId: env.PUBLIC_STOREFRONT_ID,
-    }),
+    publicStoreDomain,
+    shop,
     consent: {
-      checkoutDomain: env.PUBLIC_CHECKOUT_DOMAIN,
+      checkoutDomain,
       storefrontAccessToken: env.PUBLIC_STOREFRONT_API_TOKEN,
       withPrivacyBanner: false,
       country: args.context.storefront.i18n.country,
@@ -91,12 +103,15 @@ export async function loader(args: Route.LoaderArgs) {
 async function loadCriticalData({context}: Route.LoaderArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
-    storefront.query(HEADER_QUERY, {
+  const header = await storefront
+    .query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {headerMenuHandle: 'main-menu'},
-    }),
-  ]);
+    })
+    .catch((error: Error) => {
+      console.error(error);
+      return null;
+    });
 
   return {header};
 }
@@ -115,7 +130,10 @@ function loadDeferredData({context}: Route.LoaderArgs) {
     });
 
   return {
-    cart: cart.get(),
+    cart: cart.get().catch((error: Error) => {
+      console.error(error);
+      return null;
+    }),
     isLoggedIn: customerAccount.isLoggedIn(),
     footer,
   };

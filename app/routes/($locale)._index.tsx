@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/($locale)._index';
-import {HomePageSections} from '~/components/HomePageSections';
+import {AboutProductSection} from '~/components/AboutProductSection';
+import {HomeProductDetailsSection} from '~/components/HomeProductDetailsSection';
 
 export const meta: Route.MetaFunction = ({location}) => {
   const title = 'Fire Up Energy Drink | Zero Sugar, 31g Protein';
@@ -36,76 +37,43 @@ export const meta: Route.MetaFunction = ({location}) => {
 };
 
 export async function loader({context}: Route.LoaderArgs) {
-  const data = await context.storefront.query(HOME_FEATURED_PRODUCT_QUERY);
+  try {
+    const data = await context.storefront.query(HOME_PRODUCT_LINK_QUERY);
+    const product = data?.products?.nodes?.[0] ?? null;
 
-  const product = data?.products?.nodes?.[0] ?? null;
-  const variants = product?.variants?.nodes ?? [];
-
-  return {product, variants};
+    return {productHandle: product?.handle ?? null};
+  } catch {
+    return {productHandle: null};
+  }
 }
 
 export default function Homepage() {
-  const {product, variants} = useLoaderData<typeof loader>();
-
-  const scrollToProduct = () => {
-    const el = document.getElementById('product');
-    if (!el) return;
-    const headerOffset = 96;
-    const y = el.getBoundingClientRect().top + window.scrollY - headerOffset;
-    window.scrollTo({top: y, behavior: 'smooth'});
-  };
-
-  const handleDiscoverMore = () => {
-    document.getElementById('about')?.scrollIntoView({behavior: 'smooth'});
-  };
+  const {productHandle} = useLoaderData<typeof loader>();
+  const buyHref = `/products/${productHandle ?? 'fire-up-energy-drink'}`;
 
   return (
     <div className="home bg-black text-white min-h-screen">
-      <HomePageSections
-        product={product}
-        variants={variants}
-        scrollToProduct={scrollToProduct}
-        onDiscoverMore={handleDiscoverMore}
+      <AboutProductSection
+        variant="story"
+        cta={{
+          href: buyHref,
+          label: 'Buy Product',
+          kind: 'route',
+        }}
       />
+      <HomeProductDetailsSection />
     </div>
   );
 }
 
-const HOME_FEATURED_PRODUCT_QUERY = `#graphql
-  query HomeFeaturedProduct(
+const HOME_PRODUCT_LINK_QUERY = `#graphql
+  query HomeProductLink(
     $country: CountryCode
     $language: LanguageCode
   ) @inContext(country: $country, language: $language) {
     products(first: 1) {
       nodes {
-        id
-        title
         handle
-        vendor
-
-        variants(first: 10) {
-          nodes {
-            id
-            title
-            availableForSale
-            price {
-              amount
-              currencyCode
-            }
-            image {
-              url
-              altText
-            }
-            selectedOptions {
-              name
-              value
-            }
-            product {
-              title
-              handle
-            }
-          }
-        }
       }
     }
   }

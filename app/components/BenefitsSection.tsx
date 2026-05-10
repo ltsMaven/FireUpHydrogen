@@ -49,7 +49,7 @@ export function BenefitsSection() {
       title: 'Precision Formula',
       description:
         'Scientifically crafted blend of vitamins, amino acids, and electrolytes.',
-      color: 'from-blue-400 to-cyan-500',
+      color: 'from-orange-500 to-red-600',
     },
     {
       icon: Sparkles,

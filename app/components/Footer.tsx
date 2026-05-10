@@ -25,16 +25,12 @@ export function Footer({onNavigate}: FooterProps) {
   const handleNavClick = (page: Page, section?: string) => {
     // Terms page is a real route
     if (page === 'terms') {
-      navigate(`${prefix}/terms`);
+      void navigate(`${prefix}/terms`);
       return;
     }
 
-    if (page === 'home' && section === 'product') {
-      navigate(`${prefix}/#product`);
-      return;
-    }
     if (page === 'contact' && section === 'faq') {
-      navigate(`${prefix}/contact#faq`);
+      void navigate(`${prefix}/contact#faq`);
       return;
     }
 
@@ -50,7 +46,7 @@ export function Footer({onNavigate}: FooterProps) {
     const shouldScrollOnHome = Boolean(section);
 
     if (shouldScrollOnHome) {
-      navigate(`${prefix}/`);
+      void navigate(`${prefix}/`);
 
       setTimeout(() => {
         document.getElementById(section!)?.scrollIntoView({behavior: 'smooth'});
@@ -59,7 +55,7 @@ export function Footer({onNavigate}: FooterProps) {
       return;
     }
 
-    navigate(targetRoute);
+    void navigate(targetRoute);
     window.scrollTo({top: 0, behavior: 'smooth'});
   };
 
@@ -128,16 +124,6 @@ export function Footer({onNavigate}: FooterProps) {
                   className="text-gray-400 hover:text-orange-400 transition-colors"
                 >
                   Home
-                </button>
-              </li>
-
-              <li>
-                <button
-                  type="button"
-                  onClick={() => handleNavClick('home', 'product')}
-                  className="text-gray-400 hover:text-orange-400 transition-colors"
-                >
-                  Product
                 </button>
               </li>
 

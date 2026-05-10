@@ -18,7 +18,7 @@ import productImage2 from '../assets/product-image-2.webp';
 import productImage3 from '../assets/product-image-3.webp';
 import {motion, type Variants} from 'framer-motion';
 
-type Variant = {
+export type ProductSectionVariant = {
   id: string;
   availableForSale?: boolean | null;
   title?: string | null;
@@ -29,7 +29,7 @@ type Variant = {
 };
 
 interface ProductSectionProps {
-  variants: Variant[];
+  variants: ProductSectionVariant[];
 }
 
 const sectionV: Variants = {
@@ -58,7 +58,7 @@ const rightV: Variants = {
 export function ProductSection({variants}: ProductSectionProps) {
   const {open} = useAside();
   const params = useParams();
-  const locale = (params as any).locale as string | undefined;
+  const locale = (params as {locale?: string}).locale;
   const cartRoute = locale ? `/${locale}/cart` : '/cart';
 
   const [quantity, setQuantity] = useState(1);
@@ -67,8 +67,8 @@ export function ProductSection({variants}: ProductSectionProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const productImages = [
-    {url: productImage2, alt: 'Fire Up Can - Close Up 1'},
-    {url: productImage3, alt: 'Fire Up Can - Close Up 2'},
+    {id: 'fire-up-close-up-front', url: productImage2, alt: 'Fire Up Can - Close Up 1'},
+    {id: 'fire-up-close-up-detail', url: productImage3, alt: 'Fire Up Can - Close Up 2'},
   ];
 
   const ingredients = [
@@ -173,8 +173,8 @@ export function ProductSection({variants}: ProductSectionProps) {
                   setApi={handleCarouselSelect}
                 >
                   <CarouselContent>
-                    {productImages.map((image, index) => (
-                      <CarouselItem key={index}>
+                    {productImages.map((image) => (
+                      <CarouselItem key={image.id}>
                         <div className="relative h-96 flex items-center justify-center rounded-2xl">
                           <img
                             src={image.url}
@@ -195,7 +195,7 @@ export function ProductSection({variants}: ProductSectionProps) {
               <div className="flex gap-3 mt-6 justify-center">
                 {productImages.map((image, index) => (
                   <button
-                    key={index}
+                    key={image.id}
                     type="button"
                     onClick={() => scrollToSlide(index)}
                     className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
@@ -296,9 +296,9 @@ export function ProductSection({variants}: ProductSectionProps) {
               </div>
 
               <div>
-                <label className="text-white mb-3 block">
+                <p className="text-white mb-3">
                   Choose Your Pack
-                </label>
+                </p>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -334,7 +334,7 @@ export function ProductSection({variants}: ProductSectionProps) {
               </div>
 
               <div>
-                <label className="text-white mb-3 block">Quantity</label>
+                <p className="text-white mb-3">Quantity</p>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-white/20 rounded-lg overflow-hidden">
                     <button

@@ -53,7 +53,7 @@ export function ContactPage() {
       title: 'Email Us',
       detail: 'fireupenergydrink@gmail.com',
       description: 'Send us an email anytime',
-      color: 'from-blue-500 to-cyan-600',
+      color: 'from-orange-500 to-red-600',
       href: emailHref,
     },
     {
